@@ -80,35 +80,35 @@ export const composeClassPreview: ComposePreview = (layer: ILayer, translate: (i
   umlClass.ownedElements = [umlClassAttribute.id, umlClassMethod.id];
   elements.push(...(umlClass.render(layer, [umlClassAttribute, umlClassMethod]) as UMLElement[]));
 
-  // UML Abstract Class
-  const umlAbstract = new UMLAbstractClass({ name: translate('packages.ClassDiagram.AbstractClass') });
-  umlAbstract.bounds = {
-    ...umlAbstract.bounds,
-    width: umlAbstract.bounds.width,
-    height: umlAbstract.bounds.height,
-  };
-  const umlAbstractAttribute = new UMLClassAttribute({
-    name: translate('sidebar.classAttribute'),
-    owner: umlAbstract.id,
-    bounds: {
-      x: 0,
-      y: 40,
-      width: computeDimension(1.0, 200),
-      height: computeDimension(1.0, 30),
-    },
-  });
-  const umlAbstractMethod = new UMLClassMethod({
-    name: translate('sidebar.classMethod'),
-    owner: umlAbstract.id,
-    bounds: {
-      x: 0,
-      y: 70,
-      width: computeDimension(1.0, 200),
-      height: computeDimension(1.0, 30),
-    },
-  });
-  umlAbstract.ownedElements = [umlAbstractAttribute.id, umlAbstractMethod.id];
-  elements.push(...(umlAbstract.render(layer, [umlAbstractAttribute, umlAbstractMethod]) as UMLElement[]));
+  // // UML Abstract Class
+  // const umlAbstract = new UMLAbstractClass({ name: translate('packages.ClassDiagram.AbstractClass') });
+  // umlAbstract.bounds = {
+  //   ...umlAbstract.bounds,
+  //   width: umlAbstract.bounds.width,
+  //   height: umlAbstract.bounds.height,
+  // };
+  // const umlAbstractAttribute = new UMLClassAttribute({
+  //   name: translate('sidebar.classAttribute'),
+  //   owner: umlAbstract.id,
+  //   bounds: {
+  //     x: 0,
+  //     y: 40,
+  //     width: computeDimension(1.0, 200),
+  //     height: computeDimension(1.0, 30),
+  //   },
+  // });
+  // const umlAbstractMethod = new UMLClassMethod({
+  //   name: translate('sidebar.classMethod'),
+  //   owner: umlAbstract.id,
+  //   bounds: {
+  //     x: 0,
+  //     y: 70,
+  //     width: computeDimension(1.0, 200),
+  //     height: computeDimension(1.0, 30),
+  //   },
+  // });
+  // umlAbstract.ownedElements = [umlAbstractAttribute.id, umlAbstractMethod.id];
+  // elements.push(...(umlAbstract.render(layer, [umlAbstractAttribute, umlAbstractMethod]) as UMLElement[]));
 
   // // UML Interface
   // const umlInterface = new UMLInterface({
