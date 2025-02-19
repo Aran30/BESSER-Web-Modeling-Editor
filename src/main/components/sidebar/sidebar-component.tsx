@@ -9,7 +9,7 @@ import { localized } from '../i18n/localized';
 import { ModelState } from '../store/model-state';
 import { Container } from './sidebar-styles';
 import { SelectableState } from '../../services/uml-element/selectable/selectable-types';
-import { AssociationsList } from '../associations-list/associations-list';
+// import { AssociationsList } from '../associations-list/associations-list';
 import { UMLElementRepository } from '../../services/uml-element/uml-element-repository';
 import { IUMLElement } from '../../services/uml-element/uml-element';
 
@@ -76,16 +76,15 @@ class SidebarComponent extends Component<Props> {
         {this.props.view === ApollonView.Modelling && (
           <>
             <CreatePane />
-            <AssociationsList 
-              elements={this.props.elements}
-              onSelect={this.handleSelect}
-              onDoubleClick={this.handleDoubleClick}
-            />
           </>
         )}
       </Container>
     );
   }
 }
-
+{/* <AssociationsList 
+elements={this.props.elements}
+onSelect={this.handleSelect}
+onDoubleClick={this.handleDoubleClick}
+/> */}
 export const Sidebar = enhance(SidebarComponent);
