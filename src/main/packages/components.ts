@@ -64,6 +64,17 @@ import { BPMNPoolComponent } from './bpmn/bpmn-pool/bpmn-pool-component';
 import { BPMNSwimlaneComponent } from './bpmn/bpmn-swimlane/bpmn-swimlane-component';
 import { BPMNDataStoreComponent } from './bpmn/bpmn-data-store/bpmn-data-store-component';
 import { ClassOCLConstraintComponent } from './uml-class-diagram/uml-class-ocl/uml-class-ocl-constraint-component';
+import { UMLStateComponent } from './uml-state-diagram/uml-state/uml-state-component';
+import { UMLStateActionNodeComponent } from './uml-state-diagram/uml-state-action-node/uml-state-action-node-component';
+import { UMLStateFinalNodeComponent } from './uml-state-diagram/uml-state-final-node/uml-state-final-node-component';
+import { UMLStateForkNodeComponent } from './uml-state-diagram/uml-state-fork-node/uml-state-fork-node-component';
+import { UMLStateForkNodeHorizontalComponent } from './uml-state-diagram/uml-state-fork-node-horizontal/uml-state-fork-node-horizontal-component';
+import { UMLStateInitialNodeComponent } from './uml-state-diagram/uml-state-initial-node/uml-state-initial-node-component';
+import { UMLStateMergeNodeComponent } from './uml-state-diagram/uml-state-merge-node/uml-state-merge-node-component';
+import { UMLStateObjectNodeComponent } from './uml-state-diagram/uml-state-object-node/uml-state-object-node-component';
+import { UMLStateTransitionComponent } from './uml-state-diagram/uml-state-transition/uml-state-transition-component';
+import { UMLStateCodeBlockComponent } from './uml-state-diagram/uml-state-code-block/uml-state-code-block-component';
+import { UMLStateMemberComponent } from './uml-state-diagram/uml-state/uml-state-member-component';
 
 export const Components: {
   [key in UMLElementType | UMLRelationshipType]:
@@ -152,4 +163,16 @@ export const Components: {
   [UMLRelationshipType.SyntaxTreeLink]: SyntaxTreeLinkComponent,
   [UMLRelationshipType.FlowchartFlowline]: FlowchartFlowlineComponent,
   [UMLRelationshipType.BPMNFlow]: BPMNFlowComponent,
+  [UMLElementType.State]: UMLStateComponent,
+  [UMLElementType.StateBody]: UMLStateMemberComponent,
+  [UMLElementType.StateFallbackBody]: UMLStateMemberComponent,
+  [UMLElementType.StateActionNode]: UMLStateActionNodeComponent,
+  [UMLElementType.StateFinalNode]: UMLStateFinalNodeComponent,
+  [UMLElementType.StateForkNode]: UMLStateForkNodeComponent,
+  [UMLElementType.StateForkNodeHorizontal]: UMLStateForkNodeHorizontalComponent,
+  [UMLElementType.StateInitialNode]: UMLStateInitialNodeComponent,
+  [UMLElementType.StateMergeNode]: UMLStateMergeNodeComponent,
+  [UMLElementType.StateObjectNode]: UMLStateObjectNodeComponent,
+  [UMLRelationshipType.StateTransition]: UMLStateTransitionComponent,
+  [UMLElementType.StateCodeBlock]: UMLStateCodeBlockComponent,
 };
