@@ -92,8 +92,6 @@ class ClassifierUpdate extends Component<Props, State> {
     const attributeRefs: (Textfield<string> | null)[] = [];
     const methodRefs: (Textfield<string> | null)[] = [];
 
-    const isEnumeration = element.type === ClassElementType.Enumeration;
-
     return (
       <div>
         <section>
@@ -119,10 +117,9 @@ class ClassifierUpdate extends Component<Props, State> {
             <Switch.Item value={ClassElementType.AbstractClass}>
               {this.props.translate('packages.ClassDiagram.AbstractClass')}
             </Switch.Item>
-            {/* Switch item for Interface type is commented out because it is not supported yet
             <Switch.Item value={ClassElementType.Interface}>
               {this.props.translate('packages.ClassDiagram.Interface')}
-            </Switch.Item>*/}
+            </Switch.Item>
             <Switch.Item value={ClassElementType.Enumeration}>
               {this.props.translate('packages.ClassDiagram.Enumeration')}
             </Switch.Item>
@@ -130,11 +127,7 @@ class ClassifierUpdate extends Component<Props, State> {
           <Divider />
         </section>
         <section>
-          <Header>
-            {isEnumeration 
-              ? this.props.translate('popup.literals') 
-              : this.props.translate('popup.attributes')}
-          </Header>
+          <Header>{this.props.translate('popup.attributes')}</Header>
           {attributes.map((attribute, index) => (
             <UmlAttributeUpdate
               id={attribute.id}
@@ -157,7 +150,6 @@ class ClassifierUpdate extends Component<Props, State> {
             ref={this.newAttributeField}
             outline
             value=""
-            placeholder={isEnumeration ? `+ literal` : `+ attribute: str`}
             onSubmit={this.create(UMLClassAttribute)}
             onSubmitKeyUp={(key: string, value: string) => {
               // if we have a value -> navigate to next field in case we want to create a new element
@@ -165,8 +157,8 @@ class ClassifierUpdate extends Component<Props, State> {
                 this.setState({
                   fieldToFocus: this.newAttributeField.current,
                 });
-              } else if (!isEnumeration) {
-                // Only allow method navigation for non-enumerations
+              } else {
+                // if we submit with empty value -> focus next element (either next method field or newMethodfield)
                 if (methodRefs && methodRefs.length > 0) {
                   this.setState({
                     fieldToFocus: methodRefs[0],
@@ -192,61 +184,57 @@ class ClassifierUpdate extends Component<Props, State> {
             }}
           />
         </section>
-        {!isEnumeration && (
-          <section>
-            <Divider />
-            <Header>{this.props.translate('popup.methods')}</Header>
-            {methods.map((method, index) => (
-              <UmlAttributeUpdate
-                id={method.id}
-                key={method.id}
-                value={method.name}
-                onChange={this.props.update}
-                onSubmitKeyUp={() =>
-                  index === methods.length - 1
-                    ? this.newMethodField.current?.focus()
-                    : this.setState({
-                        fieldToFocus: methodRefs[index + 1],
-                      })
-                }
-                onDelete={this.delete}
-                onRefChange={(ref) => (methodRefs[index] = ref)}
-                element={method}
-              />
-            ))}
-            <Textfield
-              ref={this.newMethodField}
-              outline
-              value=""
-              placeholder={`+ method(param: str): str`}
-              onSubmit={this.create(UMLClassMethod)}
+        <section>
+          <Divider />
+          <Header>{this.props.translate('popup.methods')}</Header>
+          {methods.map((method, index) => (
+            <UmlAttributeUpdate
+              id={method.id}
+              key={method.id}
+              value={method.name}
+              onChange={this.props.update}
               onSubmitKeyUp={() =>
+                index === methods.length - 1
+                  ? this.newMethodField.current?.focus()
+                  : this.setState({
+                      fieldToFocus: methodRefs[index + 1],
+                    })
+              }
+              onDelete={this.delete}
+              onRefChange={(ref) => (methodRefs[index] = ref)}
+              element={method}
+            />
+          ))}
+          <Textfield
+            ref={this.newMethodField}
+            outline
+            value=""
+            onSubmit={this.create(UMLClassMethod)}
+            onSubmitKeyUp={() =>
+              this.setState({
+                fieldToFocus: this.newMethodField.current,
+              })
+            }
+            onKeyDown={(event) => {
+              // workaround when 'tab' key is pressed:
+              // prevent default and execute blur manually without switching to next tab index
+              // then set focus to newMethodField field again (componentDidUpdate)
+              if (event.key === 'Tab' && event.currentTarget.value) {
+                event.preventDefault();
+                event.currentTarget.blur();
                 this.setState({
                   fieldToFocus: this.newMethodField.current,
-                })
+                });
               }
-              onKeyDown={(event) => {
-                if (event.key === 'Tab' && event.currentTarget.value) {
-                  event.preventDefault();
-                  event.currentTarget.blur();
-                  this.setState({
-                    fieldToFocus: this.newMethodField.current,
-                  });
-                }
-              }}
-            />
-          </section>
-        )}
+            }}
+          />
+        </section>
       </div>
     );
   }
 
   private create = (Clazz: typeof UMLClassAttribute | typeof UMLClassMethod) => (value: string) => {
     const { element, create } = this.props;
-    // Prevent method creation for enumerations
-    if (element.type === ClassElementType.Enumeration && Clazz === UMLClassMethod) {
-      return;
-    }
     const member = new Clazz();
     member.name = value;
     create(member, element.id);

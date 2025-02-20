@@ -11,7 +11,6 @@ import { ReachabilityGraphRelationshipType } from './uml-reachability-graph';
 import { SyntaxTreeRelationshipType } from './syntax-tree';
 import { FlowchartRelationshipType } from './flowchart';
 import { BPMNRelationshipType } from './bpmn';
-import { StateRelationshipType } from './uml-state-diagram';
 
 export type UMLRelationshipType =
   | keyof typeof ClassRelationshipType
@@ -25,8 +24,7 @@ export type UMLRelationshipType =
   | keyof typeof ReachabilityGraphRelationshipType
   | keyof typeof SyntaxTreeRelationshipType
   | keyof typeof FlowchartRelationshipType
-  | keyof typeof BPMNRelationshipType
-  | keyof typeof StateRelationshipType;
+  | keyof typeof BPMNRelationshipType;
 
 export const UMLRelationshipType = {
   ...ClassRelationshipType,
@@ -41,7 +39,6 @@ export const UMLRelationshipType = {
   ...SyntaxTreeRelationshipType,
   ...FlowchartRelationshipType,
   ...BPMNRelationshipType,
-  ...StateRelationshipType,
 };
 
 export const DefaultUMLRelationshipType: { [key in UMLDiagramType]: UMLRelationshipType } = {
@@ -57,5 +54,4 @@ export const DefaultUMLRelationshipType: { [key in UMLDiagramType]: UMLRelations
   [UMLDiagramType.SyntaxTree]: SyntaxTreeRelationshipType.SyntaxTreeLink,
   [UMLDiagramType.Flowchart]: FlowchartRelationshipType.FlowchartFlowline,
   [UMLDiagramType.BPMN]: BPMNRelationshipType.BPMNFlow,
-  [UMLDiagramType.StateMachineDiagram]: StateRelationshipType.StateTransition,
 };

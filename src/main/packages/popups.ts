@@ -35,11 +35,6 @@ import { BPMNIntermediateEventUpdate } from './bpmn/bpmn-intermediate-event/bpmn
 import { BPMNStartEventUpdate } from './bpmn/bpmn-start-event/bpmn-start-event-update';
 import { BPMNEndEventUpdate } from './bpmn/bpmn-end-event/bpmn-end-event-update';
 import { BPMNTaskUpdate } from './bpmn/bpmn-task/bpmn-task-update';
-import { UMLStateMergeNodeUpdate } from './uml-state-diagram/uml-state-merge-node/uml-state-merge-node-update';
-import { UMLStateTransitionUpdate } from './uml-state-diagram/uml-state-transition/uml-state-transition-update';
-import { UMLStateCodeBlockUpdate } from './uml-state-diagram/uml-state-code-block/uml-state-code-block-update';
-import { UMLStateUpdate } from './uml-state-diagram/uml-state/uml-state-update';
-import { ClassOCLConstraintUpdate } from './uml-class-diagram/uml-class-ocl/uml-class-ocl-constraint-update';
 
 export type Popups = { [key in UMLElementType | UMLRelationshipType]: ComponentType<{ element: any }> | null };
 export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentType<{ element: any }> | null } = {
@@ -51,7 +46,6 @@ export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentT
   [UMLElementType.Enumeration]: UMLClassifierUpdate,
   [UMLElementType.ClassAttribute]: null,
   [UMLElementType.ClassMethod]: null,
-  [UMLElementType.ClassOCLConstraint]: ClassOCLConstraintUpdate,
   [UMLElementType.ObjectName]: UMLObjectNameUpdate,
   [UMLElementType.ObjectAttribute]: null,
   [UMLElementType.ObjectMethod]: null,
@@ -99,17 +93,6 @@ export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentT
   [UMLElementType.BPMNGroup]: DefaultPopup,
   [UMLElementType.BPMNPool]: BPMNPoolUpdate,
   [UMLElementType.BPMNSwimlane]: DefaultPopup,
-  [UMLElementType.State]: UMLStateUpdate,
-  [UMLElementType.StateBody]: null,
-  [UMLElementType.StateFallbackBody]: null,
-  [UMLElementType.StateActionNode]: DefaultPopup,
-  [UMLElementType.StateFinalNode]: DefaultPopup,
-  [UMLElementType.StateForkNode]: DefaultPopup,
-  [UMLElementType.StateForkNodeHorizontal]: DefaultPopup,
-  [UMLElementType.StateInitialNode]: DefaultPopup,
-  [UMLElementType.StateMergeNode]: UMLStateMergeNodeUpdate,
-  [UMLElementType.StateObjectNode]: DefaultPopup,
-  [UMLElementType.StateCodeBlock]: UMLStateCodeBlockUpdate,
   // Relationships
   [UMLRelationshipType.ClassAggregation]: UMLClassAssociationUpdate,
   [UMLRelationshipType.ClassBidirectional]: UMLClassAssociationUpdate,
@@ -118,7 +101,6 @@ export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentT
   [UMLRelationshipType.ClassInheritance]: UMLClassAssociationUpdate,
   [UMLRelationshipType.ClassRealization]: UMLClassAssociationUpdate,
   [UMLRelationshipType.ClassUnidirectional]: UMLClassAssociationUpdate,
-  [UMLRelationshipType.ClassOCLLink]: DefaultRelationshipPopup,
   [UMLRelationshipType.ObjectLink]: DefaultRelationshipPopup,
   [UMLRelationshipType.ActivityControlFlow]: UMLActivityControlFlowUpdate,
   [UMLRelationshipType.UseCaseAssociation]: UMLUseCaseAssociationUpdate,
@@ -138,5 +120,4 @@ export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentT
   [UMLRelationshipType.SyntaxTreeLink]: DefaultRelationshipPopup,
   [UMLRelationshipType.FlowchartFlowline]: FlowchartFlowlineUpdate,
   [UMLRelationshipType.BPMNFlow]: BPMNFlowUpdate,
-  [UMLRelationshipType.StateTransition]: UMLStateTransitionUpdate,
 };

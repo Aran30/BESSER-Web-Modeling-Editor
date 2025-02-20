@@ -7,7 +7,6 @@ import { UMLClassDependency } from './uml-class-diagram/uml-class-dependency/uml
 import { UMLClassInheritance } from './uml-class-diagram/uml-class-inheritance/uml-class-inheritance';
 import { UMLClassRealization } from './uml-class-diagram/uml-class-realization/uml-class-realization';
 import { UMLClassUnidirectional } from './uml-class-diagram/uml-class-unidirectional/uml-class-unidirectional';
-import { UMLClassOCLLink } from './uml-class-diagram/uml-class-ocl-link/uml-class-ocl-link';
 import { UMLCommunicationLink } from './uml-communication-diagram/uml-communication-link/uml-communication-link';
 import { UMLComponentDependency } from './uml-component-diagram/uml-component-dependency/uml-component-dependency';
 import { UMLComponentInterfaceProvided } from './uml-component-diagram/uml-component-interface-provided/uml-component-interface-provided';
@@ -27,7 +26,6 @@ import { UMLReachabilityGraphArc } from './uml-reachability-graph/uml-reachabili
 import { SyntaxTreeLink } from './syntax-tree/syntax-tree-link/syntax-tree-link';
 import { FlowchartFlowline } from './flowchart/flowchart-flowline/flowchart-flowline';
 import { BPMNFlow } from './bpmn/bpmn-flow/bpmn-flow';
-import { UMLStateTransition } from './uml-state-diagram/uml-state-transition/uml-state-transition';
 
 type UMLRelationships = { [key in UMLRelationshipType]: new (values?: IUMLRelationship) => UMLRelationship };
 
@@ -39,7 +37,6 @@ export const UMLRelationships = {
   [UMLRelationshipType.ClassInheritance]: UMLClassInheritance,
   [UMLRelationshipType.ClassRealization]: UMLClassRealization,
   [UMLRelationshipType.ClassUnidirectional]: UMLClassUnidirectional,
-  [UMLRelationshipType.ClassOCLLink]: UMLClassOCLLink,
   [UMLRelationshipType.ObjectLink]: UMLObjectLink,
   [UMLRelationshipType.ActivityControlFlow]: UMLActivityControlFlow,
   [UMLRelationshipType.UseCaseAssociation]: UMLUseCaseAssociation,
@@ -59,5 +56,4 @@ export const UMLRelationships = {
   [UMLRelationshipType.SyntaxTreeLink]: SyntaxTreeLink,
   [UMLRelationshipType.FlowchartFlowline]: FlowchartFlowline,
   [UMLRelationshipType.BPMNFlow]: BPMNFlow,
-  [UMLRelationshipType.StateTransition]: UMLStateTransition,
 };

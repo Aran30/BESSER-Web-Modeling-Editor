@@ -13,5 +13,4 @@ export const UMLDiagramType = {
   SyntaxTree: 'SyntaxTree',
   Flowchart: 'Flowchart',
   BPMN: 'BPMN',
-  StateMachineDiagram: 'StateMachineDiagram',
 } as const;

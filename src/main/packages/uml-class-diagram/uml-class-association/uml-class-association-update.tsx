@@ -69,8 +69,6 @@ class ClassAssociationComponent extends Component<Props, State> {
     const target = element.target && getById(element.target.element);
     if (!source || !target) return null;
 
-    const isInheritance = element.type === ClassRelationshipType.ClassInheritance;
-
     return (
       <div>
         <section>
@@ -95,24 +93,11 @@ class ClassAssociationComponent extends Component<Props, State> {
           />
           <Divider />
         </section>
-        {!isInheritance && (
-          <section>
-            <Flex>
-              <Body style={{ marginRight: '0.5em' }}>{this.props.translate('popup.name')}</Body>
-              <Textfield
-                value={element.name}
-                onChange={(value) => this.props.update(element.id, { name: value })}
-                placeholder="Association name"
-              />
-            </Flex>
-            <Divider />
-          </section>
-        )}
         <section>
           <Dropdown value={element.type as keyof typeof ClassRelationshipType} onChange={this.onChange}>
-            {/*<Dropdown.Item value={ClassRelationshipType.ClassAggregation}>
+            <Dropdown.Item value={ClassRelationshipType.ClassAggregation}>
               {this.props.translate('packages.ClassDiagram.ClassAggregation')}
-            </Dropdown.Item>*/}
+            </Dropdown.Item>
             <Dropdown.Item value={ClassRelationshipType.ClassUnidirectional}>
               {this.props.translate('packages.ClassDiagram.ClassUnidirectional')}
             </Dropdown.Item>
@@ -122,58 +107,52 @@ class ClassAssociationComponent extends Component<Props, State> {
             <Dropdown.Item value={ClassRelationshipType.ClassComposition}>
               {this.props.translate('packages.ClassDiagram.ClassComposition')}
             </Dropdown.Item>
-            {/*<Dropdown.Item value={ClassRelationshipType.ClassDependency}>
+            <Dropdown.Item value={ClassRelationshipType.ClassDependency}>
               {this.props.translate('packages.ClassDiagram.ClassDependency')}
-            </Dropdown.Item>*/}
+            </Dropdown.Item>
             <Dropdown.Item value={ClassRelationshipType.ClassInheritance}>
               {this.props.translate('packages.ClassDiagram.ClassInheritance')}
             </Dropdown.Item>
-           {/* <Dropdown.Item value={ClassRelationshipType.ClassRealization}>
+            <Dropdown.Item value={ClassRelationshipType.ClassRealization}>
               {this.props.translate('packages.ClassDiagram.ClassRealization')}
-            </Dropdown.Item>*/}
+            </Dropdown.Item>
           </Dropdown>
           <Divider />
         </section>
-        {!isInheritance && (
-          <>
-            <section>
-              <Header>{source.name}</Header>
-              <Flex>
-                <Body style={{ marginRight: '0.5em' }}>{this.props.translate('popup.multiplicity')}</Body>
-                <Textfield
-                  style={{ minWidth: 0 }}
-                  gutter
-                  value={element.source.multiplicity}
-                  onChange={this.onUpdate('multiplicity', 'source')}
-                  autoFocus
-                  placeholder={`1..1`}
-                />
-              </Flex>
-              <Flex>
-                <Body style={{ marginRight: '0.5em' }}>{this.props.translate('popup.role')}</Body>
-                <Textfield value={element.source.role} onChange={this.onUpdate('role', 'source')} />
-              </Flex>
-              <Divider />
-            </section>
-            <section>
-              <Header>{target.name}</Header>
-              <Flex>
-                <Body style={{ marginRight: '0.5em' }}>{this.props.translate('popup.multiplicity')}</Body>
-                <Textfield
-                  style={{ minWidth: 0 }}
-                  gutter
-                  value={element.target.multiplicity}
-                  onChange={this.onUpdate('multiplicity', 'target')}
-                  placeholder={`1..1`}
-                />
-              </Flex>
-              <Flex>
-                <Body style={{ marginRight: '0.5em' }}>{this.props.translate('popup.role')}</Body>
-                <Textfield value={element.target.role} onChange={this.onUpdate('role', 'target')} />
-              </Flex>
-            </section>
-          </>
-        )}
+        <section>
+          <Header>{source.name}</Header>
+          <Flex>
+            <Body style={{ marginRight: '0.5em' }}>{this.props.translate('popup.multiplicity')}</Body>
+            <Textfield
+              style={{ minWidth: 0 }}
+              gutter
+              value={element.source.multiplicity}
+              onChange={this.onUpdate('multiplicity', 'source')}
+              autoFocus
+            />
+          </Flex>
+          <Flex>
+            <Body style={{ marginRight: '0.5em' }}>{this.props.translate('popup.role')}</Body>
+            <Textfield value={element.source.role} onChange={this.onUpdate('role', 'source')} />
+          </Flex>
+          <Divider />
+        </section>
+        <section>
+          <Header>{target.name}</Header>
+          <Flex>
+            <Body style={{ marginRight: '0.5em' }}>{this.props.translate('popup.multiplicity')}</Body>
+            <Textfield
+              style={{ minWidth: 0 }}
+              gutter
+              value={element.target.multiplicity}
+              onChange={this.onUpdate('multiplicity', 'target')}
+            />
+          </Flex>
+          <Flex>
+            <Body style={{ marginRight: '0.5em' }}>{this.props.translate('popup.role')}</Body>
+            <Textfield value={element.target.role} onChange={this.onUpdate('role', 'target')} />
+          </Flex>
+        </section>
       </div>
     );
   }
