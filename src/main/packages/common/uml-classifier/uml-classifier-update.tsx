@@ -117,10 +117,9 @@ class ClassifierUpdate extends Component<Props, State> {
             <Switch.Item value={ClassElementType.AbstractClass}>
               {this.props.translate('packages.ClassDiagram.AbstractClass')}
             </Switch.Item>
-            {/* Switch item for Interface type is commented out because it is not supported yet
             <Switch.Item value={ClassElementType.Interface}>
               {this.props.translate('packages.ClassDiagram.Interface')}
-            </Switch.Item>*/}
+            </Switch.Item>
             <Switch.Item value={ClassElementType.Enumeration}>
               {this.props.translate('packages.ClassDiagram.Enumeration')}
             </Switch.Item>
@@ -151,7 +150,6 @@ class ClassifierUpdate extends Component<Props, State> {
             ref={this.newAttributeField}
             outline
             value=""
-            placeholder={`+ attribute: str`}
             onSubmit={this.create(UMLClassAttribute)}
             onSubmitKeyUp={(key: string, value: string) => {
               // if we have a value -> navigate to next field in case we want to create a new element
@@ -211,7 +209,6 @@ class ClassifierUpdate extends Component<Props, State> {
             ref={this.newMethodField}
             outline
             value=""
-            placeholder={`+ method(param: str): str`}
             onSubmit={this.create(UMLClassMethod)}
             onSubmitKeyUp={() =>
               this.setState({

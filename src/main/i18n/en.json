@@ -11,8 +11,6 @@
     "objectAttribute": "attribute = value"
   },
   "popup": {
-    "bodies": "Body",
-    "fallback_bodies": "Fallback Body",
     "attributes": "Attributes",
     "methods": "Methods",
     "relationship": "Relationship",
@@ -173,20 +171,6 @@
       "BPMNSwimlane": "Lane",
       "BPMNSwimlanes": "Lanes",
       "BPMNGroup": "Group"
-    },
-    "StateDiagram": {
-      "State": "State",
-      "StateActionNode": "Action",
-      "StateFinalNode": "Final Node",
-      "StateForkNode": "Fork Node",
-      "StateForkNodeHorizontal": "Fork Node Horizontal",
-      "StateInitialNode": "Initial Node",
-      "StateMergeNode": "Condition",
-      "StateObjectNode": "Object",
-      "StateTransition": "Transition"
-    },
-    "OCLConstraint": {
-      "Constraint": "Constraint"
     }
   }
 }

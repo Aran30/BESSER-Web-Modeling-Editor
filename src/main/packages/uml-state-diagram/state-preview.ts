@@ -9,7 +9,7 @@ import { UMLStateInitialNode } from './uml-state-initial-node/uml-state-initial-
 import { UMLStateMergeNode } from './uml-state-merge-node/uml-state-merge-node';
 import { UMLStateObjectNode } from './uml-state-object-node/uml-state-object-node';
 import { UMLState } from './uml-state/uml-state';
-import { UMLStateCodeBlock } from './uml-state-code-block/uml-state-code-block';
+// import { UMLStateCodeBlock } from './uml-state-code-block/uml-state-code-block';
 import { UMLStateBody } from './uml-state-body/uml-state-body';
 import { UMLStateFallbackBody } from './uml-state-fallback_body/uml-state-fallback_body';
 
@@ -28,7 +28,7 @@ export const composeStatePreview: ComposePreview = (
   UMLStateForkNodeHorizontal.defaultHeight = Math.round(20 / 10) * 10;
   
   // Empty State
-  const emptyState = new UMLState({ name: translate('packages.StateDiagram.State') });
+  const emptyState = new UMLState({ name: "State" });
   emptyState.bounds = {
     ...emptyState.bounds,
     width: emptyState.bounds.width,
@@ -37,14 +37,14 @@ export const composeStatePreview: ComposePreview = (
   elements.push(emptyState);
 
   // State with Body
-  const stateWithBody = new UMLState({ name: translate('packages.StateDiagram.State') });
+  const stateWithBody = new UMLState({ name: "State" });
   stateWithBody.bounds = {
     ...stateWithBody.bounds,
     width: stateWithBody.bounds.width,
     height: stateWithBody.bounds.height,
   };
   const stateBody = new UMLStateBody({
-    name: translate('popup.bodies'),
+    name: "Body",
     owner: stateWithBody.id,
     bounds: {
       x: 0,
@@ -57,14 +57,14 @@ export const composeStatePreview: ComposePreview = (
   elements.push(...(stateWithBody.render(layer, [stateBody]) as UMLElement[]));
 
   // State with Body and Fallback Body
-  const stateWithBothBodies = new UMLState({ name: translate('packages.StateDiagram.State') });
+  const stateWithBothBodies = new UMLState({ name: "State" });
   stateWithBothBodies.bounds = {
     ...stateWithBothBodies.bounds,
     width: stateWithBothBodies.bounds.width,
     height: stateWithBothBodies.bounds.height,
   };
   const stateBody2 = new UMLStateBody({
-    name: translate('popup.bodies'),
+    name: "Body",
     owner: stateWithBothBodies.id,
     bounds: {
       x: 0,
@@ -74,7 +74,7 @@ export const composeStatePreview: ComposePreview = (
     },
   });
   const fallbackBody = new UMLStateFallbackBody({
-    name: translate('popup.fallback_bodies'),
+    name: "Fallback Body",
     owner: stateWithBothBodies.id,
     bounds: {
       x: 0,
@@ -137,18 +137,18 @@ export const composeStatePreview: ComposePreview = (
   // const stateForkNodeHorizontal = new UMLStateForkNodeHorizontal();
   // elements.push(stateForkNodeHorizontal);
 
-  // State Code Block
-  const stateCodeBlock = new UMLStateCodeBlock({
-    text: '# Sample code\nprint("Hello World")',
-    language: 'python',
-    bounds: { x: 0, y: 0, width: 150, height: 150 },
-    code: {
-      content: '# Sample code\nprint("Hello World")',
-      language: 'python',
-      version: '1.0'
-    }
-  });
-  elements.push(stateCodeBlock);
+  // // State Code Block
+  // const stateCodeBlock = new UMLStateCodeBlock({
+  //   text: '# Sample code\nprint("Hello World")',
+  //   language: 'python',
+  //   bounds: { x: 0, y: 0, width: 150, height: 150 },
+  //   code: {
+  //     content: '# Sample code\nprint("Hello World")',
+  //     language: 'python',
+  //     version: '1.0'
+  //   }
+  // });
+  // elements.push(stateCodeBlock);
 
   return elements;
 };
