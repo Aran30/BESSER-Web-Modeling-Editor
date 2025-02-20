@@ -87,11 +87,6 @@ export type UMLClassifier = UMLElement & {
     attributes: string[];
     methods: string[];
 };
-export interface UMLState extends UMLElement {
-    type: UMLElementType;
-    bodies: string[];
-    fallbackBodies: string[];
-}
 export type UMLDeploymentNode = UMLElement & {
     stereotype: string;
     displayStereotype: boolean;
@@ -184,7 +179,4 @@ export type SVG = {
         width: number;
         height: number;
     };
-};
-export type UMLStateTransition = UMLRelationship & {
-    params?: string | string[];
 };
