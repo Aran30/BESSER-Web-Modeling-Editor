@@ -84,6 +84,17 @@ export type UMLClassifier = UMLElement & {
   methods: string[];
 };
 
+export interface UMLState extends UMLElement {
+  type: UMLElementType;
+  bodies: string[];
+  fallbackBodies: string[];
+}
+
+export type UMLStateTransition = UMLRelationship & {
+  params?: string | string[];
+};
+
+
 export type UMLDeploymentNode = UMLElement & {
   stereotype: string;
   displayStereotype: boolean;
