@@ -53,6 +53,7 @@ import { BPMNPool } from './bpmn/bpmn-pool/bpmn-pool';
 import { BPMNSwimlane } from './bpmn/bpmn-swimlane/bpmn-swimlane';
 import { BPMNGroup } from './bpmn/bpmn-group/bpmn-group';
 import { BPMNDataStore } from './bpmn/bpmn-data-store/bpmn-data-store';
+import { ClassOCLConstraint } from './uml-class-diagram/uml-class-ocl/uml-class-ocl-constraint';
 
 export const UMLElements = {
   [UMLElementType.Package]: UMLClassPackage,
@@ -62,6 +63,7 @@ export const UMLElements = {
   [UMLElementType.Enumeration]: UMLEnumeration,
   [UMLElementType.ClassAttribute]: UMLClassAttribute,
   [UMLElementType.ClassMethod]: UMLClassMethod,
+  [UMLElementType.ClassOCLConstraint]: ClassOCLConstraint,
   [UMLElementType.ObjectName]: UMLObjectName,
   [UMLElementType.ObjectAttribute]: UMLObjectAttribute,
   [UMLElementType.ObjectMethod]: UMLObjectMethod,
