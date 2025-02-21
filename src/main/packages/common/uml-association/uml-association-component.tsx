@@ -119,18 +119,23 @@ export const getMarkerForTypeForUMLAssociation = (relationshipType: UMLRelations
       case ClassRelationshipType.ClassInheritance:
       case ClassRelationshipType.ClassRealization:
         return Marker.Triangle;
+      case ClassRelationshipType.ClassOCLLink:
+        //return Marker.Arrow;
     }
   })(relationshipType);
 };
 
 export const UMLAssociationComponent: FunctionComponent<Props> = ({ element }) => {
   const marker = getMarkerForTypeForUMLAssociation(element.type);
+  const isInheritance = element.type === ClassRelationshipType.ClassInheritance;
 
   const stroke = ((type) => {
     switch (type) {
       case ClassRelationshipType.ClassDependency:
       case ClassRelationshipType.ClassRealization:
         return 7;
+      case ClassRelationshipType.ClassOCLLink:
+        return "5,5";
     }
   })(element.type);
 
@@ -151,42 +156,46 @@ export const UMLAssociationComponent: FunctionComponent<Props> = ({ element }) =
         markerEnd={`url(#${id})`}
         strokeDasharray={stroke}
       />
-      <text
-        x={source.x || 0}
-        y={source.y || 0}
-        {...layoutTextForUMLAssociation(element.source.direction, 'BOTTOM')}
-        pointerEvents="none"
-        style={{ ...textFill }}
-      >
-        {element.source.multiplicity}
-      </text>
-      <text
-        x={target.x || 0}
-        y={target.y || 0}
-        {...layoutTextForUMLAssociation(element.target.direction, 'BOTTOM')}
-        pointerEvents="none"
-        style={{ ...textFill }}
-      >
-        {element.target.multiplicity}
-      </text>
-      <text
-        x={source.x || 0}
-        y={source.y || 0}
-        {...layoutTextForUMLAssociation(element.source.direction, 'TOP')}
-        pointerEvents="none"
-        style={{ ...textFill }}
-      >
-        {element.source.role}
-      </text>
-      <text
-        x={target.x || 0}
-        y={target.y || 0}
-        {...layoutTextForUMLAssociation(element.target.direction, 'TOP')}
-        pointerEvents="none"
-        style={{ ...textFill }}
-      >
-        {element.target.role}
-      </text>
+      {!isInheritance && (
+        <>
+          <text
+            x={source.x || 0}
+            y={source.y || 0}
+            {...layoutTextForUMLAssociation(element.source.direction, 'BOTTOM')}
+            pointerEvents="none"
+            style={{ ...textFill }}
+          >
+            {element.source.multiplicity}
+          </text>
+          <text
+            x={target.x || 0}
+            y={target.y || 0}
+            {...layoutTextForUMLAssociation(element.target.direction, 'BOTTOM')}
+            pointerEvents="none"
+            style={{ ...textFill }}
+          >
+            {element.target.multiplicity}
+          </text>
+          <text
+            x={source.x || 0}
+            y={source.y || 0}
+            {...layoutTextForUMLAssociation(element.source.direction, 'TOP')}
+            pointerEvents="none"
+            style={{ ...textFill }}
+          >
+            {element.source.role}
+          </text>
+          <text
+            x={target.x || 0}
+            y={target.y || 0}
+            {...layoutTextForUMLAssociation(element.target.direction, 'TOP')}
+            pointerEvents="none"
+            style={{ ...textFill }}
+          >
+            {element.target.role}
+          </text>
+        </>
+      )}
     </g>
   );
 };
