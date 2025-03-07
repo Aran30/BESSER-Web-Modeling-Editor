@@ -129,13 +129,11 @@ class UnwrappedUpdatePane extends Component<Props, State> {
     // We can check if the click is near the edges of the popover
     if (this.popover.current) {
       const rect = this.popover.current.getBoundingClientRect();
-      const dragHandleSize = 20; // Use the same size for all edges
-      
       const isEdgeClick = 
-        event.clientY - rect.top <= dragHandleSize || // Top edge
-        rect.bottom - event.clientY <= dragHandleSize || // Bottom edge
-        event.clientX - rect.left <= dragHandleSize || // Left edge
-        rect.right - event.clientX <= dragHandleSize; // Right edge
+        event.clientY - rect.top <= 20 || // Top edge or header area
+        rect.bottom - event.clientY <= 5 || // Bottom edge
+        event.clientX - rect.left <= 5 || // Left edge
+        rect.right - event.clientX <= 5; // Right edge
       
       if (isEdgeClick) {
         const { position } = this.state;

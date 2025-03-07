@@ -7,20 +7,11 @@ export type Props = {
   alignment?: 'start' | 'center' | 'end';
   position: { x: number; y: number };
   maxHeight?: number;
-  style?: React.CSSProperties;
-  onMouseDown?: (event: React.MouseEvent) => void;
 } & HTMLAttributes<HTMLDivElement>;
 
 export const Popover = forwardRef<HTMLDivElement, Props>(
-  ({ children, placement = 'right', alignment = 'center', maxHeight, style, onMouseDown, ...props }, ref) => (
-    <PopoverContainer 
-      ref={ref} 
-      placement={placement} 
-      alignment={alignment} 
-      style={style} 
-      onMouseDown={onMouseDown} 
-      {...props}
-    >
+  ({ children, placement = 'right', alignment = 'center', maxHeight, ...props }, ref) => (
+    <PopoverContainer ref={ref} placement={placement} alignment={alignment} {...props}>
       <Arrow placement={placement} alignment={alignment} />
       <PopoverBody maxHeight={maxHeight}>{children}</PopoverBody>
     </PopoverContainer>
