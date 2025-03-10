@@ -49,7 +49,7 @@ exports[`test communication link popup render 1`] = `
           class="sc-hRJfrW gziudj"
         >
           <input
-            class="sc-bmzYkS sc-iHGNWf fEVqYL etmSlo"
+            class="sc-bmzYkS sc-iHGNWf hFRLkv etmSlo"
             maxlength="100"
             value="CommunicationSourceLinkMessage0"
           />
@@ -92,7 +92,7 @@ exports[`test communication link popup render 1`] = `
           class="sc-hRJfrW gziudj"
         >
           <input
-            class="sc-bmzYkS sc-iHGNWf fEVqYL etmSlo"
+            class="sc-bmzYkS sc-iHGNWf hFRLkv etmSlo"
             maxlength="100"
             value="CommunicationSourceLinkMessage1"
           />
@@ -135,7 +135,7 @@ exports[`test communication link popup render 1`] = `
           class="sc-hRJfrW gziudj"
         >
           <input
-            class="sc-bmzYkS sc-iHGNWf fEVqYL etmSlo"
+            class="sc-bmzYkS sc-iHGNWf hFRLkv etmSlo"
             maxlength="100"
             value="CommunicationSourceLinkMessage2"
           />
@@ -178,7 +178,7 @@ exports[`test communication link popup render 1`] = `
           class="sc-hRJfrW gziudj"
         >
           <input
-            class="sc-bmzYkS sc-iHGNWf fEVqYL etmSlo"
+            class="sc-bmzYkS sc-iHGNWf hFRLkv etmSlo"
             maxlength="100"
             value="CommunicationTargetLinkMessage0"
           />
@@ -221,7 +221,7 @@ exports[`test communication link popup render 1`] = `
           class="sc-hRJfrW gziudj"
         >
           <input
-            class="sc-bmzYkS sc-iHGNWf fEVqYL etmSlo"
+            class="sc-bmzYkS sc-iHGNWf hFRLkv etmSlo"
             maxlength="100"
             value="CommunicationTargetLinkMessage1"
           />
@@ -264,7 +264,7 @@ exports[`test communication link popup render 1`] = `
           class="sc-hRJfrW gziudj"
         >
           <input
-            class="sc-bmzYkS sc-iHGNWf fEVqYL etmSlo"
+            class="sc-bmzYkS sc-iHGNWf hFRLkv etmSlo"
             maxlength="100"
             value="CommunicationTargetLinkMessage2"
           />
@@ -304,7 +304,7 @@ exports[`test communication link popup render 1`] = `
           </button>
         </div>
         <input
-          class="sc-bmzYkS sc-iHGNWf fEVqYL lmyIYN"
+          class="sc-bmzYkS sc-iHGNWf hFRLkv lmyIYN"
           maxlength="100"
           value=""
         />
