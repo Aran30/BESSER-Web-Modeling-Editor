@@ -146,7 +146,7 @@ class ClassAssociationComponent extends Component<Props, State> {
                   value={element.source.multiplicity}
                   onChange={this.onUpdate('multiplicity', 'source')}
                   autoFocus
-                  // placeholder={`1..1`}
+                  placeholder={`1..1`}
                 />
               </Flex>
               <Flex>
@@ -164,7 +164,7 @@ class ClassAssociationComponent extends Component<Props, State> {
                   gutter
                   value={element.target.multiplicity}
                   onChange={this.onUpdate('multiplicity', 'target')}
-                  // placeholder={`1..1`}
+                  placeholder={`1..1`}
                 />
               </Flex>
               <Flex>

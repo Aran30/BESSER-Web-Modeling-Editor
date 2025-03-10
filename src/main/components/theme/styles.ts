@@ -22,6 +22,7 @@ const apollonTheme = {
     grid: 'var(--apollon-grid, rgba(36, 39, 36, 0.1))',
     primaryContrast: 'var(--apollon-primary-contrast, #212529)',
     gray: 'var(--apollon-gray, #e9ecef)',
+    graylight: 'var(--apollon-graylight,rgb(170, 170, 170))',
     grayAccent: 'var(--apollon-gray-variant, #343a40)',
   },
   font: {
