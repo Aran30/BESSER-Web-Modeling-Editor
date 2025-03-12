@@ -189,7 +189,7 @@ export const composeClassPreview: ComposePreview = (layer: ILayer, translate: (i
   );
 
   const umlOCLConstraint = new ClassOCLConstraint({
-          constraint: "OCL " + translate('packages.OCLConstraint.Constraint'),
+          constraint: "OCL Constraint",
          });
   elements.push(...(umlOCLConstraint.render(layer) as UMLElement[]));
 
