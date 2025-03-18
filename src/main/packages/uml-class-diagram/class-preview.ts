@@ -154,7 +154,7 @@ export const composeClassPreview: ComposePreview = (layer: ILayer, translate: (i
     height: umlEnumeration.bounds.height,
   };
   const umlEnumerationCase1 = new UMLClassAttribute({
-    name: translate('sidebar.enumAttribute') + ' 1',
+    name: translate('sidebar.enumAttribute') + '_1',
     owner: umlEnumeration.id,
     bounds: {
       x: 0,
@@ -164,7 +164,7 @@ export const composeClassPreview: ComposePreview = (layer: ILayer, translate: (i
     },
   });
   const umlEnumerationCase2 = new UMLClassAttribute({
-    name: translate('sidebar.enumAttribute') + ' 2',
+    name: translate('sidebar.enumAttribute') + '_2',
     owner: umlEnumeration.id,
     bounds: {
       x: 0,
@@ -174,7 +174,7 @@ export const composeClassPreview: ComposePreview = (layer: ILayer, translate: (i
     },
   });
   const umlEnumerationCase3 = new UMLClassAttribute({
-    name: translate('sidebar.enumAttribute') + ' 3',
+    name: translate('sidebar.enumAttribute') + '_3',
     owner: umlEnumeration.id,
     bounds: {
       x: 0,

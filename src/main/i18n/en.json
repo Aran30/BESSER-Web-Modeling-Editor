@@ -42,7 +42,7 @@
       "ClassBidirectional": "Association (bidirectional)",
       "ClassComposition": "Composition",
       "ClassDependency": "Dependency",
-      "ClassInheritance": "Inheritance",
+      "ClassInheritance": "Generalization",
       "ClassRealization": "Realization",
       "ClassUnidirectional": "Association (unidirectional)"
     },

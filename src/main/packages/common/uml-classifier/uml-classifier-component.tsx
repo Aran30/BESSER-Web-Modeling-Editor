@@ -51,7 +51,7 @@ export const UMLClassifierComponent: FunctionComponent<Props> = ({ element, chil
       {element.hasAttributes && (
         <ThemedPath d={`M 0 ${element.headerHeight} H ${element.bounds.width}`} strokeColor={element.strokeColor} />
       )}
-      {element.hasMethods && (
+      {element.hasMethods && element.stereotype !== 'enumeration' && (
         <ThemedPath d={`M 0 ${element.deviderPosition} H ${element.bounds.width}`} strokeColor={element.strokeColor} />
       )}
     </g>
