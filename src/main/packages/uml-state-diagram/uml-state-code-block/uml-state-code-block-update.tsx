@@ -27,11 +27,14 @@ const StyledTextArea = styled.textarea`
   border: 1px solid ${(props) => props.theme.color.gray};
   border-radius: 4px;
   width: 100%;
+  max-width: 100%;
   min-height: 150px;
   font-family: monospace;
-  resize: both;
+  resize: vertical;
   white-space: pre;
   tab-size: 4;
+  box-sizing: border-box;
+  overflow-x: auto;
   
   &:focus {
     outline: none;
