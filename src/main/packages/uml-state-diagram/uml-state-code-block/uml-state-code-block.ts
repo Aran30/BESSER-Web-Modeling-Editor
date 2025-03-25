@@ -3,98 +3,78 @@ import { StateElementType, StateRelationshipType } from '..';
 import { ILayer } from '../../../services/layouter/layer';
 import { ILayoutable } from '../../../services/layouter/layoutable';
 import { IUMLElement, UMLElement } from '../../../services/uml-element/uml-element';
-import { UMLElementType } from '../../uml-element-type';
+import { UMLElementFeatures } from '../../../services/uml-element/uml-element-features';
 import { assign } from '../../../utils/fx/assign';
+import { IBoundary } from '../../../utils/geometry/boundary';
+import { UMLElementType } from '../../uml-element-type';
 
-export interface IUMLStateCodeBlockElement extends IUMLElement {
-  text: string;
+export interface IUMLStateCodeBlock extends IUMLElement {
+  code: string;
   language: string;
-  code?: {
-    content: string;
-    language: string;
-    version?: string;
-  };
+  _codeContent?: string; // Internal property to preserve code
 }
 
-export class UMLStateCodeBlock extends UMLElement implements IUMLStateCodeBlockElement {
+export class UMLStateCodeBlock extends UMLElement implements IUMLStateCodeBlock {
+  static supportedRelationships = [StateRelationshipType.StateTransition];
+  static features: UMLElementFeatures = { ...UMLElement.features, resizable: true };
+  
   type: UMLElementType = StateElementType.StateCodeBlock;
-  text: string = '';
+  code: string = '';
   language: string = 'python';
-  code: {
-    content: string;
-    language: string;
-    version?: string;
-  } = {
-    content: '',
-    language: 'python',
-    version: '1.0'
+  _codeContent?: string; // Internal property to preserve code
+  
+  bounds: IBoundary = { 
+    ...this.bounds, 
+    width: 200, 
+    height: 150 
   };
 
-  constructor(values?: DeepPartial<IUMLStateCodeBlockElement>) {
-    super(values && !values.bounds ? { ...values, bounds: { x: 0, y: 0, width: 200, height: 100 } } : values);
-    
-
-    //console.log('Raw constructor values:', JSON.stringify(values, null, 2));
-
-    // If values exist, override defaults
-    if (values) {
-      // First, try to get content from code.content
-      if (values.code?.content) {
-        this.text = values.code.content;
-        this.code.content = values.code.content;
-      } 
-      // If no code.content, try text
-      else if (values.text) {
-        this.text = values.text;
-        this.code.content = values.text;
-      }
-
-      // Set language
-      if (values.code?.language) {
-        this.language = values.code.language;
-        this.code.language = values.code.language;
-      } else if (values.language) {
-        this.language = values.language;
-        this.code.language = values.language;
-      }
-
-      // Set version
-      this.code.version = values.code?.version || '1.0';
+  constructor(values?: DeepPartial<IUMLStateCodeBlock>) {
+    super(values);
+    assign<IUMLStateCodeBlock>(this, values);
+    if (values?.code) {
+      this._codeContent = values.code;
+      this.code = values.code;
     }
-  }
-
-  serialize() {
-    return {
-      ...super.serialize(),
-      text: this.text,
-      language: this.language,
-      code: {
-        content: this.text,
-        language: this.language,
-        version: this.code.version
-      }
-    };
+    this.language = 'python';
   }
 
   render(canvas: ILayer): ILayoutable[] {
+    // Enforce minimum dimensions for readability
+    this.bounds.width = Math.max(this.bounds.width, 150);
+    this.bounds.height = Math.max(this.bounds.height, 100);
+    
+    // Ensure code is sync'd with _codeContent
+    if (this._codeContent && !this.code) {
+      this.code = this._codeContent;
+    }
+    
     return [this];
   }
 
-  deserialize(values: any) {
+  serialize(): any {
+    const base = super.serialize();
+    
+    // Use _codeContent if available, otherwise fallback to code
+    const codeToSerialize = this._codeContent || this.code || '';
+    
+    return {
+      ...base,
+      type: this.type,
+      code: codeToSerialize,
+      language: this.language
+    };
+  }
+  
+  deserialize(values: any): void {
     super.deserialize(values);
     
-    // Handle code content and language
-    const content = values.code?.content || values.text || '';
-    const language = values.code?.language || values.language || 'python';
-    const version = values.code?.version || '1.0';
-
-    // Set values ensuring synchronization
-    this.text = content;
-    this.language = language;
-    this.code = {
-      content: content,
-      language: language,
-      version: version
-    };
+    if (values.code) {
+      this._codeContent = values.code;
+      this.code = values.code;
+    }
+    
+    // Set language with Python default
+    this.language = values.language || 'python';
   }
 }

@@ -128,22 +128,22 @@ export function validateBeforeGeneration(editor: Apollon.ApollonEditor): boolean
     const classNameResult = validateClassNames(editor);
     if (!classNameResult.isValid) {
         showValidationMessage(
-            "⚠️ Some class names are not unique.\n\n" +
+            "⚠️ Some class names are not unique. Code generation will continue, but certain names have been modified to avoid duplicates.\n\n" +
             classNameResult.message +
             "\n\nPlease review and update the class names if necessary.",
             true
         );
-        return false;
+        return true;
     }
 
     const associationResult = validateAssociationEnds(editor);
     if (!associationResult.isValid) {
         showValidationMessage(
-            "⚠️ Continuing generation with default association end names: \n\n" + associationResult.message + 
+            "⚠️ Cannot generate code:\n\n" + associationResult.message + 
             "\n\nPlease add missing role names to all associations.",
             true
         );
-        return true;
+        return false;
     }
     
     return true;

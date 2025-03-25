@@ -180,14 +180,15 @@ aside.sidebar section>div {
   justify-content: space-between;
 }
 
-.switch button {
-  background: var(--apollon-background);
-  color: var(--apollon-primary-contrast);
-  border: 1px solid var(--apollon-gray);
+.switch button,
+.file-input-label {
+  font-size: 14px;  /* Set consistent font size */
+  font-weight: normal;
   padding: 0.375rem 0.75rem;
   margin: 0;
   line-height: 1.5;
-  outline: none;
+  width: 100%;
+  text-align: center;
 }
 
 .switch button:hover {
@@ -207,10 +208,6 @@ aside.sidebar section>div {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.switch button {
-  width: 100%;
 }
 
 .switch button:first-child {
@@ -383,4 +380,28 @@ section:has(> h3:contains("Import/Export")) .file-input-label {
 .button-with-spinner.loading {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* Update the B-UML section specifically */
+#bumlSection .switch button,
+#bumlSection .file-input-label {
+  font-size: 14px;  /* Ensure consistent font size in B-UML section */
+  font-weight: normal;
+}
+
+/* Ensure consistent styling for all buttons in the sidebar */
+aside.sidebar .switch button,
+aside.sidebar .file-input-label {
+  background: var(--apollon-background);
+  color: var(--apollon-primary-contrast);
+  border: 1px solid var(--apollon-gray);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+aside.sidebar .switch button:hover,
+aside.sidebar .file-input-label:hover {
+  background-color: var(--apollon-gray);
+  border-color: var(--apollon-gray-variant);
 }

@@ -53,7 +53,7 @@ exports[`test flowchart flowline update render 1`] = `
       </section>
       <section>
         <input
-          class="sc-bmzYkS sc-iHGNWf fEVqYL gacFBO"
+          class="sc-bmzYkS sc-iHGNWf hFRLkv gacFBO"
           maxlength="100"
           value="FlowchartFlowline"
         />

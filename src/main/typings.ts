@@ -90,6 +90,11 @@ export interface UMLState extends UMLElement {
   fallbackBodies: string[];
 }
 
+export type UMLStateTransition = UMLRelationship & {
+  params?: string | string[];
+};
+
+
 export type UMLDeploymentNode = UMLElement & {
   stereotype: string;
   displayStereotype: boolean;
@@ -194,8 +199,4 @@ export type SVG = {
     width: number;
     height: number;
   };
-};
-
-export type UMLStateTransition = UMLRelationship & {
-  params?: string | string[];
 };

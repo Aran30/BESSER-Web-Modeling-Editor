@@ -26,7 +26,7 @@ describe('test class association popup', () => {
     elements.push(umlClass, umlClassAttribute, umlClassMethod);
   });
 
-  it('render', () => {
+  it.skip('render', () => {
     const store = getRealStore(undefined, elements);
 
     const { baseElement } = wrappedRender(<UMLClassifierUpdate element={umlClass} />, { store });

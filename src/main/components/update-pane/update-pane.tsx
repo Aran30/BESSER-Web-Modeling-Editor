@@ -56,26 +56,47 @@ const initialState = Object.freeze({
   position: null as { x: number; y: number } | null,
   placement: undefined as 'top' | 'right' | 'bottom' | 'left' | undefined,
   alignment: undefined as 'start' | 'center' | 'end' | undefined,
+  isDragging: false as boolean, // Change to boolean type instead of literal false
+  dragOffset: { x: 0, y: 0 },
+  hasBeenMoved: false as boolean, // Track if the user has manually moved the popover
+  hoverEdge: false as boolean, // Add this property
 });
 
 type State = typeof initialState;
 
 class UnwrappedUpdatePane extends Component<Props, State> {
-  state: Readonly<State> = initialState;
+  state: Readonly<State> = {
+    ...initialState,
+    hoverEdge: false, // Add this to track if we're hovering over a draggable edge
+  };
 
   popover: RefObject<HTMLDivElement> = createRef();
 
   componentDidUpdate(prevProps: Readonly<Props>): void {
     if (!prevProps.element && this.props.element) {
+      // First appearance of popover
       setTimeout(this.show, 0);
-    } else if (prevProps.element && this.props.element && prevProps.element !== this.props.element) {
-      this.position(this.props);
+    } else if (prevProps.element && this.props.element && prevProps.element.id !== this.props.element.id) {
+      // Element has changed - reset position tracking and reposition
+      this.setState({ hasBeenMoved: false }, () => {
+        this.position(this.props);
+      });
     }
+  }
+
+  componentDidMount(): void {
+    document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('mouseup', this.handleMouseUp);
+  }
+
+  componentWillUnmount(): void {
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mouseup', this.handleMouseUp);
   }
 
   render() {
     const { element, disabled, mode } = this.props;
-    const { position, alignment, placement } = this.state;
+    const { position, alignment, placement, hoverEdge } = this.state;
 
     if (!element || disabled || !position) {
       return null;
@@ -92,15 +113,95 @@ class UnwrappedUpdatePane extends Component<Props, State> {
     }
 
     return createPortal(
-      <Popover ref={this.popover} position={position} placement={placement} alignment={alignment} maxHeight={500}>
+      <Popover 
+        ref={this.popover} 
+        position={position} 
+        placement={placement} 
+        alignment={alignment} 
+        maxHeight={500}
+        style={{ cursor: hoverEdge ? 'move' : 'default' }}
+        onMouseDown={this.handleMouseDown}
+        onMouseMove={this.handleMouseOver}
+      >
         <CustomPopupComponent element={element} />
       </Popover>,
       this.props.root,
     );
   }
 
+  private handleMouseDown = (event: React.MouseEvent): void => {
+    // Only trigger drag on the popover's header/border areas, not on content
+    // We can check if the click is near the edges of the popover
+    if (this.popover.current) {
+      const rect = this.popover.current.getBoundingClientRect();
+      const dragHandleSize = 15; // Use the same size for all edges
+      
+      const isEdgeClick = 
+        event.clientY - rect.top <= dragHandleSize || // Top edge
+        rect.bottom - event.clientY <= dragHandleSize || // Bottom edge
+        event.clientX - rect.left <= dragHandleSize || // Left edge
+        rect.right - event.clientX <= dragHandleSize; // Right edge
+      
+      if (isEdgeClick) {
+        const { position } = this.state;
+        if (position) {
+          this.setState({
+            isDragging: true,
+            dragOffset: {
+              x: event.clientX - position.x,
+              y: event.clientY - position.y,
+            }
+          });
+          // Prevent text selection during drag
+          event.preventDefault();
+        }
+      }
+    }
+  };
+
+  private handleMouseMove = (event: MouseEvent): void => {
+    const { isDragging, dragOffset } = this.state;
+    if (isDragging) {
+      // Update position based on mouse movement
+      this.setState({
+        position: {
+          x: event.clientX - dragOffset.x,
+          y: event.clientY - dragOffset.y,
+        },
+        hasBeenMoved: true // Mark that the user has manually moved the popover
+      });
+    }
+  };
+
+  private handleMouseUp = (): void => {
+    if (this.state.isDragging) {
+      this.setState({ isDragging: false });
+    }
+  };
+
+  private handleMouseOver = (event: React.MouseEvent): void => {
+    if (this.popover.current) {
+      const rect = this.popover.current.getBoundingClientRect();
+      const dragHandleSize = 20; // Same size as in handleMouseDown
+      
+      const isEdgeHover = 
+        event.clientY - rect.top <= dragHandleSize || // Top edge
+        rect.bottom - event.clientY <= dragHandleSize || // Bottom edge
+        event.clientX - rect.left <= dragHandleSize || // Left edge
+        rect.right - event.clientX <= dragHandleSize; // Right edge
+      
+      // Only update state if it's changed to avoid unnecessary renders
+      if (isEdgeHover !== this.state.hoverEdge) {
+        this.setState({ hoverEdge: isEdgeHover });
+      }
+    }
+  };
+
   private show = (): void => {
-    this.position(this.props);
+    // Only position if it hasn't been moved by the user
+    if (!this.state.hasBeenMoved) {
+      this.position(this.props);
+    }
     document.addEventListener('pointerdown', this.onPointerDown);
 
     const { parentElement: canvas }: SVGSVGElement = this.props.canvas.layer;
@@ -124,6 +225,11 @@ class UnwrappedUpdatePane extends Component<Props, State> {
   };
 
   private position = ({ element, canvas }: Readonly<Props>): void => {
+    // Skip repositioning if the user has manually moved the popover
+    if (this.state.hasBeenMoved) {
+      return;
+    }
+    
     const container: HTMLElement | null = canvas.layer.parentElement;
 
     if (element && container) {

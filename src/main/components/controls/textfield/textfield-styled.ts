@@ -28,8 +28,8 @@ const Input = styled.textarea`
   }
 
   ::placeholder {
-    color: ${(props) => props.theme.color.grayAccent};
-    opacity: 1;
+    color: ${(props) => props.theme.color.graylight};
+    opacity: 0.9;
   }
 `;
 

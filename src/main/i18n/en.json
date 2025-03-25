@@ -5,14 +5,12 @@
     "highlight": "Show interactive elements"
   },
   "sidebar": {
-    "classAttribute": "+ attribute: Type",
+    "classAttribute": "+ attribute: str",
     "classMethod": "+ method()",
     "enumAttribute": "Case",
     "objectAttribute": "attribute = value"
   },
   "popup": {
-    "bodies": "Body",
-    "fallback_bodies": "Fallback Body",
     "attributes": "Attributes",
     "methods": "Methods",
     "relationship": "Relationship",
@@ -44,7 +42,7 @@
       "ClassBidirectional": "Association (bidirectional)",
       "ClassComposition": "Composition",
       "ClassDependency": "Dependency",
-      "ClassInheritance": "Inheritance",
+      "ClassInheritance": "Generalization",
       "ClassRealization": "Realization",
       "ClassUnidirectional": "Association (unidirectional)"
     },
@@ -173,20 +171,6 @@
       "BPMNSwimlane": "Lane",
       "BPMNSwimlanes": "Lanes",
       "BPMNGroup": "Group"
-    },
-    "StateDiagram": {
-      "State": "State",
-      "StateActionNode": "Action",
-      "StateFinalNode": "Final Node",
-      "StateForkNode": "Fork Node",
-      "StateForkNodeHorizontal": "Fork Node Horizontal",
-      "StateInitialNode": "Initial Node",
-      "StateMergeNode": "Condition",
-      "StateObjectNode": "Object",
-      "StateTransition": "Transition"
-    },
-    "OCLConstraint": {
-      "Constraint": "Constraint"
     }
   }
 }

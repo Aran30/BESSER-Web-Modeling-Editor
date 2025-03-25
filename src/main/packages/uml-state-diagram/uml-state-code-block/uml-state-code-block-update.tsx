@@ -1,187 +1,165 @@
 import React, { Component, ComponentClass } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { UMLStateCodeBlock, IUMLStateCodeBlockElement } from './uml-state-code-block';
+import styled from 'styled-components';
 import { Button } from '../../../components/controls/button/button';
+import { ColorButton } from '../../../components/controls/color-button/color-button';
+import { Divider } from '../../../components/controls/divider/divider';
 import { TrashIcon } from '../../../components/controls/icon/trash';
+import { Textfield } from '../../../components/controls/textfield/textfield';
+import { Header } from '../../../components/controls/typography/typography';
 import { I18nContext } from '../../../components/i18n/i18n-context';
 import { localized } from '../../../components/i18n/localized';
 import { ModelState } from '../../../components/store/model-state';
-import { styled } from '../../../components/theme/styles';
+import { StylePane } from '../../../components/style-pane/style-pane';
 import { UMLElementRepository } from '../../../services/uml-element/uml-element-repository';
-import { AsyncDispatch } from '../../../utils/actions/actions';
-import { IUMLElement } from '../../../services/uml-element/uml-element';
-import MonacoEditor from 'react-monaco-editor';
+import { IUMLStateCodeBlock, UMLStateCodeBlock } from './uml-state-code-block';
 
-// Styled Components
-const EditorContainer = styled.div`
-  height: 200px;
-  width: 300px;
+const Flex = styled.div`
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+`;
+
+
+const StyledTextArea = styled.textarea`
+  padding: 8px;
   border: 1px solid ${(props) => props.theme.color.gray};
   border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 8px;
+  width: 100%;
+  max-width: 100%;
+  min-height: 150px;
+  font-family: monospace;
+  resize: vertical;
+  white-space: pre;
+  tab-size: 4;
+  box-sizing: border-box;
+  overflow-x: auto;
   
-  &:focus-within {
+  &:focus {
+    outline: none;
     border-color: ${(props) => props.theme.color.primary};
   }
 `;
 
-const Controls = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-`;
+type State = { colorOpen: boolean };
 
-// Types
-interface OwnProps {
+
+type OwnProps = {
   element: UMLStateCodeBlock;
-}
+};
 
-interface StateProps {}
+type StateProps = {};
 
-interface DispatchProps {
-  update: (id: string, values: Partial<IUMLStateCodeBlockElement>) => void;
-  delete: AsyncDispatch<typeof UMLElementRepository.delete>;
-}
+type DispatchProps = {
+  update: (id: string, values: Partial<IUMLStateCodeBlock>) => void;
+  deleteElement: typeof UMLElementRepository.delete;
+};
 
 type Props = OwnProps & StateProps & DispatchProps & I18nContext;
 
-// Component
-class UMLStateCodeBlockUpdateComponent extends Component<Props> {
-  componentDidMount() {
+class StateCodeBlockUpdate extends Component<Props, State> {
+  state = { colorOpen: false };
+
+  private toggleColor = () => {
+    this.setState((state) => ({
+      colorOpen: !state.colorOpen,
+    }));
+  };
+
+  private updateCode = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const content = event.target.value;
     const { element, update } = this.props;
-    
-    // Handle initial state, including JSON imports
-    const content = element.code?.content || element.text || '';
-    const language = element.code?.language || element.language || 'python';
-    const version = element.code?.version || '1.0';
-
-    // Always update to ensure proper initialization
-    update(element.id, {
-      text: content,
-      language: language,
-      bounds: {
-        ...element.bounds,
-        width: element.bounds.width || 380,
-        height: element.bounds.height || 220
-      },
-      code: {
-        content: content,
-        language: language,
-        version: version
-      }
-    });
-  }
-
-  private onUpdate = (text: string) => {
-    const { element, update } = this.props;
-    
-    // Don't update if text is undefined
-    if (text === undefined) return;
-
-    const currentVersion = element.code?.version || '1.0';
-    const existingLanguage = element.code?.language || element.language || 'python';
-    
-    update(element.id, {
-      text: text,
-      language: existingLanguage,
-      bounds: element.bounds,
-      code: {
-        content: text,
-        language: existingLanguage,
-        version: currentVersion
-      }
+    update(element.id, { 
+      code: content
     });
   };
 
-  private onLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { element, update } = this.props;
-    const newLanguage = event.target.value;
-    const currentVersion = element.code?.version || '1.0';
-    const existingContent = element.code?.content || element.text;
-    
-    const updatedValues: Partial<IUMLStateCodeBlockElement> = {
-      text: existingContent,
-      language: newLanguage,
-      code: {
-        content: existingContent,
-        language: newLanguage,
-        version: currentVersion
-      }
-    };
-    
-    update(element.id, updatedValues);
+  private handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Allow tab key to insert a tab character instead of changing focus
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      
+      const target = event.target as HTMLTextAreaElement;
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+      
+      const value = target.value;
+      const newValue = value.substring(0, start) + '\t' + value.substring(end);
+      
+      // Update the value directly
+      target.value = newValue;
+      
+      // Update the cursor position
+      setTimeout(() => {
+        target.selectionStart = target.selectionEnd = start + 1;
+      }, 0);
+      
+      // Trigger the update with the new value
+      this.updateCode({
+        target: target,
+        currentTarget: target,
+      } as React.ChangeEvent<HTMLTextAreaElement>);
+    }
+  };
+
+  private onUpdateSize = (dimension: 'width' | 'height') => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(event.target.value, 10);
+    if (!isNaN(value)) {
+      const { element, update } = this.props;
+      update(element.id, {
+        bounds: {
+          ...element.bounds,
+          [dimension]: value
+        }
+      });
+    }
   };
 
   render() {
-    const { element } = this.props;
-
+    const { element, update, deleteElement } = this.props;
+    
     return (
       <div>
-        <Controls>
-          <select 
-            value={element.language}
-            onChange={this.onLanguageChange}
-            style={{ padding: '4px 8px' }}
-          >
-            <option value="typescript">TypeScript</option>
-            <option value="javascript">JavaScript</option>
-            <option value="java">Java</option>
-            <option value="python">Python</option>
-          </select>
-          <Button color="link" onClick={() => this.props.delete(element.id)}>
-            <TrashIcon />
-          </Button>
-        </Controls>
-        <EditorContainer>
-          <MonacoEditor
-            value={element.text}
-            onChange={this.onUpdate}
-            language={element.language}
-            options={{
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-              fontSize: 14,
-              lineNumbers: 'on',
-              roundedSelection: false,
-              automaticLayout: true,
-              wordWrap: 'on',
-              theme: 'vs-dark',
-              renderLineHighlight: 'all',
-              scrollbar: {
-                useShadows: false,
-                verticalScrollbarSize: 8,
-                horizontalScrollbarSize: 8
-              },
-              overviewRulerBorder: false,
-              hideCursorInOverviewRuler: true,
-              contextmenu: true,
-              quickSuggestions: true,
-              suggestOnTriggerCharacters: true,
-              parameterHints: {
-                enabled: true,
-                cycle: true
-              },
-              formatOnPaste: true,
-              formatOnType: true
-            }}
+        <section>
+          <Flex>
+            <Header>Python Code Block</Header>
+            <ColorButton onClick={this.toggleColor} />
+            <Button color="link" tabIndex={-1} onClick={() => deleteElement(element.id)}>
+              <TrashIcon />
+            </Button>
+          </Flex>
+          <StylePane
+            open={this.state.colorOpen}
+            element={element}
+            onColorChange={update}
+            fillColor
+            lineColor
+            textColor
           />
-        </EditorContainer>
+          <Divider />
+        </section>
+
+        <section>
+          <StyledTextArea
+            value={element.code || ''}
+            onChange={this.updateCode}
+            onKeyDown={this.handleKeyDown}
+            autoFocus
+            spellCheck={false}
+          />
+        </section>
       </div>
     );
   }
 }
 
-// Connect & Export
 const enhance = compose<ComponentClass<OwnProps>>(
   localized,
   connect<StateProps, DispatchProps, OwnProps, ModelState>(null, {
-    update: (id: string, values: Partial<IUMLStateCodeBlockElement>) => 
-      UMLElementRepository.update(id, values as Partial<IUMLElement>),
-    delete: UMLElementRepository.delete,
+    update: UMLElementRepository.update as any as (id: string, values: Partial<IUMLStateCodeBlock>) => void,
+    deleteElement: UMLElementRepository.delete,
   }),
 );
 
-export const UMLStateCodeBlockUpdate = enhance(UMLStateCodeBlockUpdateComponent);
+export const UMLStateCodeBlockUpdate = enhance(StateCodeBlockUpdate);

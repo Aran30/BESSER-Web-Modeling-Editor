@@ -1,6 +1,6 @@
 ---
 name: "🐛 Bug report"
-about: Something on Apollon is not working as expected? Create a report to help us
+about: Something on the WME is not working as expected? Create a report to help us
   improve.
 labels: bug
 

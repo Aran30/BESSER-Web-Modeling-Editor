@@ -1,6 +1,5 @@
 import { getDiagramData } from './utils';
 import { validateBeforeGeneration } from './validation';
-import { showValidationMessage } from './validation';
 
 export async function exportBuml(editorInstance: any) {
   try {
@@ -9,10 +8,6 @@ export async function exportBuml(editorInstance: any) {
       return;
     }
 
-    // Add validation before generation
-    if (!validateBeforeGeneration(editorInstance)) {
-      return;
-    }
     const diagramData = getDiagramData(editorInstance);
     if (!diagramData) {
       console.error("No diagram data available!");
@@ -32,13 +27,7 @@ export async function exportBuml(editorInstance: any) {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      if (response.status === 400 && errorData.detail) {
-        showValidationMessage(`⚠️ Error: ${errorData.detail}`, true);
-        return;
-      }
-      showValidationMessage(`⚠️ Failed to export B-UML: HTTP error! status: ${response.status}`, true);
-      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     console.log("B-UML generated successfully");
@@ -103,15 +92,6 @@ export async function generateOutput(generatorType: string) {
       }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      if (response.status === 400 && errorData.detail) {
-        showValidationMessage(`⚠️ Error: ${errorData.detail}`, true);
-        return;
-      }
-      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
-    }
-    
     if (response.ok) {
       const blob = await response.blob();
       
@@ -193,10 +173,6 @@ export async function checkOclConstraints(editorInstance: any) {
 
     if (!response.ok) {
       const errorData = await response.json();
-      if (response.status === 400 && errorData.detail) {
-        showValidationMessage(`⚠️ Error: ${errorData.detail}`, true);
-        return;
-      }
       throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
     }
 
