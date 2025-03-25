@@ -31,7 +31,6 @@ const CodeContent: FunctionComponent<{ content: string, textColor: string }> = (
     const lines = content.split('\n');
     return lines.map((line, index) => {
       const y = 20 + (index * lineHeight);
-      // Just use preserveTabs without escapeHtml since React handles HTML escaping
       const processedLine = preserveTabs(line);
       return (
         <foreignObject key={index} x={0} y={y} width="100%" height={lineHeight}>
@@ -56,7 +55,7 @@ const CodeContent: FunctionComponent<{ content: string, textColor: string }> = (
 
   return (
     <g>
-      <foreignObject x={0} y={20} width="100%" height="calc(100% - 20px)">
+      <foreignObject x={0} y={20} width="100%" height="80% ">
         <div style={{ 
           width: '100%', 
           height: '100%', 
