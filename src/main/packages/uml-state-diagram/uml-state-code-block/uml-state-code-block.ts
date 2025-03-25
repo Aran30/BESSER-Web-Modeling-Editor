@@ -11,6 +11,7 @@ import { UMLElementType } from '../../uml-element-type';
 export interface IUMLStateCodeBlock extends IUMLElement {
   code: string;
   language: string;
+  _codeContent?: string; // Internal property to preserve code
 }
 
 export class UMLStateCodeBlock extends UMLElement implements IUMLStateCodeBlock {
@@ -20,6 +21,7 @@ export class UMLStateCodeBlock extends UMLElement implements IUMLStateCodeBlock 
   type: UMLElementType = StateElementType.StateCodeBlock;
   code: string = '';
   language: string = 'python';
+  _codeContent?: string; // Internal property to preserve code
   
   bounds: IBoundary = { 
     ...this.bounds, 
@@ -29,10 +31,17 @@ export class UMLStateCodeBlock extends UMLElement implements IUMLStateCodeBlock 
 
   constructor(values?: DeepPartial<IUMLStateCodeBlock>) {
     super(values);
-    assign<IUMLStateCodeBlock>(this, values);
+    
+    // Set default values
+    this.code = '';
+    this.language = 'python';
+    
+    // Store code in a separate property for preservation
     if (values?.code) {
+      this._codeContent = values.code;
       this.code = values.code;
     }
+    
     // Always use Python regardless of what's provided
     this.language = 'python';
   }
@@ -41,16 +50,38 @@ export class UMLStateCodeBlock extends UMLElement implements IUMLStateCodeBlock 
     // Enforce minimum dimensions for readability
     this.bounds.width = Math.max(this.bounds.width, 150);
     this.bounds.height = Math.max(this.bounds.height, 100);
+    
+    // Ensure code is sync'd with _codeContent
+    if (this._codeContent && !this.code) {
+      this.code = this._codeContent;
+    }
+    
     return [this];
   }
 
   serialize(): any {
     const base = super.serialize();
+    
+    // Use _codeContent if available, otherwise fallback to code
+    const codeToSerialize = this._codeContent || this.code || '';
+    
     return {
       ...base,
       type: this.type,
-      code: this.code,
+      code: codeToSerialize,
       language: this.language
     };
+  }
+  
+  deserialize(values: any): void {
+    super.deserialize(values);
+    
+    if (values.code) {
+      this._codeContent = values.code;
+      this.code = values.code;
+    }
+    
+    // Set language with Python default
+    this.language = values.language || 'python';
   }
 }
