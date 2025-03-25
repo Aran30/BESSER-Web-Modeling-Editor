@@ -31,18 +31,11 @@ export class UMLStateCodeBlock extends UMLElement implements IUMLStateCodeBlock 
 
   constructor(values?: DeepPartial<IUMLStateCodeBlock>) {
     super(values);
-    
-    // Set default values
-    this.code = '';
-    this.language = 'python';
-    
-    // Store code in a separate property for preservation
+    assign<IUMLStateCodeBlock>(this, values);
     if (values?.code) {
       this._codeContent = values.code;
       this.code = values.code;
     }
-    
-    // Always use Python regardless of what's provided
     this.language = 'python';
   }
 

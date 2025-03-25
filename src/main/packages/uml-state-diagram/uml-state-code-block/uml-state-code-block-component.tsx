@@ -9,10 +9,9 @@ interface Props {
 
 // Preserves tabs when displaying code
 const preserveTabs = (str: string): string => {
-  return str.replace(/\t/g, '    '); // Replace tabs with 4 spaces for rendering
+  return str.replace(/\t/g, '    ');
 };
 
-// A simple function to escape HTML in code
 const escapeHtml = (str: string): string => {
   return str
     .replace(/&/g, '&amp;')
@@ -55,7 +54,7 @@ const CodeContent: FunctionComponent<{ content: string, textColor: string }> = (
 
   return (
     <g>
-      <foreignObject x={0} y={20} width="100%" height="80% ">
+      <foreignObject x={0} y={20} width="100%" height="calc(100% - 20px)">
         <div style={{ 
           width: '100%', 
           height: '100%', 
