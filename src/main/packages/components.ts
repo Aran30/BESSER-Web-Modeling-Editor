@@ -76,6 +76,11 @@ import { UMLStateTransitionComponent } from './uml-state-diagram/uml-state-trans
 import { UMLStateCodeBlockComponent } from './uml-state-diagram/uml-state-code-block/uml-state-code-block-component';
 import { UMLStateMemberComponent } from './uml-state-diagram/uml-state/uml-state-member-component';
 
+import { IntentComponent } from './bot-state-diagram/intent-object-component/intent-object-component';
+import { IntentMemberComponent } from './bot-state-diagram/intent-object-component/intent-member-component';
+import { Intent } from './bot-state-diagram/intent-object-component/intent';
+
+
 export const Components: {
   [key in UMLElementType | UMLRelationshipType]:
     | FunctionComponent<PropsWithChildren<{ element: any; fillColor?: string }>>
@@ -175,4 +180,7 @@ export const Components: {
   [UMLElementType.StateObjectNode]: UMLStateObjectNodeComponent,
   [UMLRelationshipType.StateTransition]: UMLStateTransitionComponent,
   [UMLElementType.StateCodeBlock]: UMLStateCodeBlockComponent,
+
+  [UMLElementType.Intent]: IntentComponent,
+  [UMLElementType.IntentBody]: IntentMemberComponent,
 };

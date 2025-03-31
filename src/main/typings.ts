@@ -90,6 +90,11 @@ export interface UMLState extends UMLElement {
   fallbackBodies: string[];
 }
 
+export interface UMLIntent extends UMLElement {
+  type: UMLElementType;
+  bodies: string[];
+}
+
 export type UMLStateTransition = UMLRelationship & {
   params?: string | string[];
 };

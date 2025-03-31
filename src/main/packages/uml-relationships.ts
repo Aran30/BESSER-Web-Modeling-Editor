@@ -29,6 +29,7 @@ import { FlowchartFlowline } from './flowchart/flowchart-flowline/flowchart-flow
 import { BPMNFlow } from './bpmn/bpmn-flow/bpmn-flow';
 import { UMLStateTransition } from './uml-state-diagram/uml-state-transition/uml-state-transition';
 
+
 type UMLRelationships = { [key in UMLRelationshipType]: new (values?: IUMLRelationship) => UMLRelationship };
 
 export const UMLRelationships = {

@@ -66,6 +66,10 @@ import { UMLStateMergeNode } from './uml-state-diagram/uml-state-merge-node/uml-
 import { UMLStateObjectNode } from './uml-state-diagram/uml-state-object-node/uml-state-object-node';
 import { UMLStateCodeBlock } from './uml-state-diagram/uml-state-code-block/uml-state-code-block';
 
+import { Intent } from './bot-state-diagram/intent-object-component/intent';
+import { IntentBody } from './bot-state-diagram/intent-body/intent-body';
+
+
 export const UMLElements = {
   [UMLElementType.Package]: UMLClassPackage,
   [UMLElementType.Class]: UMLClass,
@@ -133,4 +137,6 @@ export const UMLElements = {
   [UMLElementType.StateMergeNode]: UMLStateMergeNode,
   [UMLElementType.StateObjectNode]: UMLStateObjectNode,
   [UMLElementType.StateCodeBlock]: UMLStateCodeBlock,
+  [UMLElementType.Intent]: Intent,
+  [UMLElementType.IntentBody]: IntentBody,
 };
