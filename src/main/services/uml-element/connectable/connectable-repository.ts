@@ -8,6 +8,7 @@ import { ConnectableActionTypes, ConnectEndAction, ConnectStartAction } from './
 import { UMLElements } from '../../../packages/uml-elements';
 import { UMLElementType } from '../../..';
 import { UMLRelationshipCommonRepository } from '../../uml-relationship/uml-relationship-common-repository';
+import { UMLRelationship } from '../../uml-relationship/uml-relationship';
 
 export const Connectable = {
   startConnecting:
@@ -44,6 +45,7 @@ export const Connectable = {
     (dispatch, getState) => {
       const sources = source ? (Array.isArray(source) ? source : [source]) : getState().connecting;
       const targets = Array.isArray(target) ? target : [target];
+      
       if (!targets.length || (targets.length !== 1 && targets.length !== sources.length)) {
         return;
       }
@@ -56,9 +58,25 @@ export const Connectable = {
           continue;
         }
 
+        // Check if source or target is a relationship
+        const sourceElement = dispatch(UMLElementCommonRepository.getById(port.element));
+        const targetElement = dispatch(UMLElementCommonRepository.getById(connectionTarget.element));
+        
+        const isSourceRelationship = sourceElement && UMLRelationship.isUMLRelationship(sourceElement);
+        const isTargetRelationship = targetElement && UMLRelationship.isUMLRelationship(targetElement);
+        
+        // Handle center port for relationships
+        if ((isSourceRelationship && port.direction === Direction.Center) || 
+            (isTargetRelationship && connectionTarget.direction === Direction.Center)) {
+          console.log('Connecting with relationship center port', {
+            source: { id: sourceElement?.id, dir: port.direction },
+            target: { id: targetElement?.id, dir: connectionTarget.direction }
+          });
+        }
+
         connections.push({ source: port, target: connectionTarget });
       }
-
+      
       const relationships = connections.map((connection) => {
         const sourceElement = dispatch(UMLElementCommonRepository.getById(connection.source.element));
         const targetElement = dispatch(UMLElementCommonRepository.getById(connection.target.element));

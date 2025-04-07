@@ -21,7 +21,7 @@ export interface IUMLRelationship extends IUMLElement {
 
 export abstract class UMLRelationship extends UMLElement implements IUMLRelationship {
   static features: UMLRelationshipFeatures = {
-    connectable: false,
+    connectable: true, // Changed from false to true
     droppable: false,
     hoverable: true,
     movable: false,

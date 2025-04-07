@@ -43,6 +43,26 @@ export const enum ResizeFrom {
 }
 
 export const getPortsForElement = (element: IUMLElement): { [key in Direction]: Point } => {
+  // Add null check
+  if (!element || !element.bounds) {
+    console.warn('getPortsForElement called with null or invalid element');
+    return {
+      [Direction.Up]: new Point(0, 0),
+      [Direction.Right]: new Point(0, 0),
+      [Direction.Down]: new Point(0, 0),
+      [Direction.Left]: new Point(0, 0),
+      [Direction.Upright]: new Point(0, 0),
+      [Direction.Downright]: new Point(0, 0),
+      [Direction.Upleft]: new Point(0, 0),
+      [Direction.Downleft]: new Point(0, 0),
+      [Direction.Topright]: new Point(0, 0),
+      [Direction.Bottomright]: new Point(0, 0),
+      [Direction.Topleft]: new Point(0, 0),
+      [Direction.Bottomleft]: new Point(0, 0),
+      [Direction.Center]: new Point(0, 0),
+    };
+  }
+  
   return {
     [Direction.Up]: new Point(element.bounds.width / 2, 0),
     [Direction.Right]: new Point(element.bounds.width, element.bounds.height / 2),
@@ -56,6 +76,7 @@ export const getPortsForElement = (element: IUMLElement): { [key in Direction]: 
     [Direction.Bottomright]: new Point((3 * element.bounds.width) / 4, element.bounds.height),
     [Direction.Topleft]: new Point(element.bounds.width / 4, 0),
     [Direction.Bottomleft]: new Point(element.bounds.width / 4, element.bounds.height),
+    [Direction.Center]: new Point(element.bounds.width / 2, element.bounds.height / 2),
   };
 };
 

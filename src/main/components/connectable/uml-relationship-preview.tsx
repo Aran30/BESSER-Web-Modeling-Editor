@@ -7,6 +7,7 @@ import { IPoint, Point } from '../../utils/geometry/point';
 import { ModelState } from '../store/model-state';
 import { getPortsForElement } from '../../services/uml-element/uml-element';
 import { styled } from '../theme/styles';
+import { UMLRelationship } from '../../services/uml-relationship/uml-relationship';
 
 type OwnProps = {
   port: IUMLElementPort;
@@ -24,10 +25,56 @@ type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps;
 
+// Add safe version of getPortsForElement function
+const safeGetPortsForElement = (element: any): { [key in Direction]: Point } => {
+  if (!element) {
+    // Return default ports at origin if element is null
+    return {
+      [Direction.Up]: new Point(0, 0),
+      [Direction.Right]: new Point(0, 0),
+      [Direction.Down]: new Point(0, 0),
+      [Direction.Left]: new Point(0, 0),
+      [Direction.Upright]: new Point(0, 0),
+      [Direction.Downright]: new Point(0, 0),
+      [Direction.Upleft]: new Point(0, 0),
+      [Direction.Downleft]: new Point(0, 0),
+      [Direction.Topright]: new Point(0, 0),
+      [Direction.Topleft]: new Point(0, 0),
+      [Direction.Bottomright]: new Point(0, 0),
+      [Direction.Bottomleft]: new Point(0, 0),
+      [Direction.Center]: new Point(0, 0),
+    };
+  }
+  return getPortsForElement(element);
+};
+
 const enhance = connect<StateProps, DispatchProps, OwnProps, ModelState>(
-  (state, props) => ({
-    ports: getPortsForElement(UMLElementRepository.get(state.elements[props.port.element])!),
-  }),
+  (state, props) => {
+    const element = state.elements[props.port.element];
+    
+    // If element is null, return default ports
+    if (!element) {
+      return {
+        ports: safeGetPortsForElement(null)
+      };
+    }
+    
+    const isRelationship = UMLRelationship.isUMLRelationship(element);
+    
+    // For relationships, use getPortsForRelationship
+    if (isRelationship) {
+      // Import and use the helper function
+      const { getPortsForRelationship } = require('../../services/uml-relationship/uml-relationship-port');
+      return {
+        ports: getPortsForRelationship(element)
+      };
+    }
+    
+    // For regular elements, use standard ports
+    return {
+      ports: safeGetPortsForElement(element)
+    };
+  },
   {
     end: UMLElementRepository.endConnecting,
     getAbsolutePosition: UMLElementRepository.getAbsolutePosition as any as AsyncDispatch<

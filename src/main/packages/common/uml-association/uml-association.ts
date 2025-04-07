@@ -89,10 +89,10 @@ export abstract class UMLAssociation extends UMLRelationship implements IUMLAsso
     );
 
     const boundingElements = [
-      textWithLayoutPropertiesToBounds(canvas, sourceAnchor, this.source.multiplicity, sourceMultiplicity),
-      textWithLayoutPropertiesToBounds(canvas, targetAnchor, this.target.multiplicity, targetMultiplicity),
-      textWithLayoutPropertiesToBounds(canvas, sourceAnchor, this.source.role, sourceRole),
-      textWithLayoutPropertiesToBounds(canvas, targetAnchor, this.target.role, targetRole),
+      textWithLayoutPropertiesToBounds(canvas, sourceAnchor, this.source.multiplicity, sourceMultiplicity || { textAnchor: 'start' }),
+      textWithLayoutPropertiesToBounds(canvas, targetAnchor, this.target.multiplicity, targetMultiplicity || { textAnchor: 'start' }),
+      textWithLayoutPropertiesToBounds(canvas, sourceAnchor, this.source.role, sourceRole || { textAnchor: 'start' }),
+      textWithLayoutPropertiesToBounds(canvas, targetAnchor, this.target.role, targetRole || { textAnchor: 'start' }),
     ];
 
     this.bounds = computeBoundingBoxForElements([this, ...boundingElements]);

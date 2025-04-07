@@ -17,6 +17,8 @@ import { UMLElementType, UMLRelationshipType } from '../../..';
 import { convertTouchEndIntoPointerUp } from '../../../utils/touch-event';
 import isMobile from 'is-mobile';
 import { getPortsForElement, IUMLElement } from '../../../services/uml-element/uml-element';
+import { IUMLRelationship, UMLRelationship } from '../../../services/uml-relationship/uml-relationship';
+import { getPortsForRelationship } from '../../../services/uml-relationship/uml-relationship-port';
 
 type StateProps = {
   hovered: boolean;
@@ -102,7 +104,9 @@ const Handle = styled((props) => {
         ? 90
         : direction === Direction.Down || direction === Direction.Bottomright || direction === Direction.Bottomleft
           ? 180
-          : -90,
+          : direction === Direction.Center
+            ? 0
+            : -90,
 }))<{ rotate: number }>`
   cursor: crosshair;
   pointer-events: all;
@@ -110,6 +114,23 @@ const Handle = styled((props) => {
   path {
     transform: rotate(${(props) => props.rotate}deg);
   }
+`;
+
+const CenterHandle = styled((props) => {
+  const { ...otherProps } = props;
+  return (
+    <svg {...otherProps}>
+      <circle r="7" />
+    </svg>
+  );
+}).attrs<{ ports: { [key in Direction]: Point } }>(({ ports }) => ({
+  fill: '#0064ff',
+  fillOpacity: 0.3,
+  x: `${ports[Direction.Center].x}px`,
+  y: `${ports[Direction.Center].y}px`,
+}))`
+  cursor: crosshair;
+  pointer-events: all;
 `;
 
 export const connectable = (
@@ -146,107 +167,127 @@ export const connectable = (
         ...props
       } = this.props;
 
+      if (!element) {
+        return <WrappedComponent {...props} />;
+      }
+
       const features = { ...UMLElements, ...UMLRelationships }[type].features as UMLElementFeatures &
         UMLRelationshipFeatures;
 
-      const ports = getPortsForElement(element);
+      const isRelationship = UMLRelationship.isUMLRelationship(element);
+      const ports = isRelationship 
+        ? getPortsForRelationship(element as IUMLRelationship) 
+        : getPortsForElement(element);
 
       return (
         <WrappedComponent {...props}>
           {props.children}
           {(hovered || selected || connecting || reconnecting) && (
             <>
-              {/* Top edge handles */}
-              <Handle
-                ports={ports}
-                direction={Direction.Topleft}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
-              <Handle
-                ports={ports}
-                direction={Direction.Up}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
-              <Handle
-                ports={ports}
-                direction={Direction.Topright}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
+              {/* Si c'est une relation, on n'affiche que le point du centre */}
+              {isRelationship ? (
+                <CenterHandle
+                  ports={ports}
+                  direction={Direction.Center}
+                  onPointerDown={this.onPointerDown}
+                  onPointerUp={this.onPointerUp}
+                />
+              ) : (
+                <>
+                  {/* Top edge handles */}
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Topleft}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
+                  {/* ...existing handle definitions... */}
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Up}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Topright}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
 
-              {/* Right edge handles */}
-              <Handle
-                ports={ports}
-                direction={Direction.Upright}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
-              <Handle
-                ports={ports}
-                direction={Direction.Right}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
-              <Handle
-                ports={ports}
-                direction={Direction.Downright}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
+                  {/* Right edge handles */}
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Upright}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Right}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Downright}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
 
-              {/* Bottom edge handles */}
-              <Handle
-                ports={ports}
-                direction={Direction.Bottomleft}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
-              <Handle
-                ports={ports}
-                direction={Direction.Down}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
-              <Handle
-                ports={ports}
-                direction={Direction.Bottomright}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
+                  {/* Bottom edge handles */}
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Bottomleft}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Down}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Bottomright}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
 
-              {/* Left edge handles */}
-              <Handle
-                ports={ports}
-                direction={Direction.Upleft}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
-              <Handle
-                ports={ports}
-                direction={Direction.Left}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
-              <Handle
-                ports={ports}
-                direction={Direction.Downleft}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-                alternativePortVisualization={features.alternativePortVisualization}
-              />
+                  {/* Left edge handles */}
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Upleft}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Left}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
+                  <Handle
+                    ports={ports}
+                    direction={Direction.Downleft}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                    alternativePortVisualization={features.alternativePortVisualization}
+                  />
+                </>
+              )}
             </>
           )}
         </WrappedComponent>
@@ -261,6 +302,10 @@ export const connectable = (
       // -> connection logic for desktop can be applied
       if (!(event instanceof PointerEvent)) {
         convertTouchEndIntoPointerUp(event);
+        return;
+      }
+
+      if (!this.props.element) {
         return;
       }
 
@@ -306,6 +351,9 @@ export const connectable = (
           [Direction.Upleft]: new Point(0, 0.25),
           [Direction.Left]: new Point(0, 0.5),
           [Direction.Downleft]: new Point(0, 0.75),
+          
+          // Center point
+          [Direction.Center]: new Point(0.5, 0.5),
         };
 
         const ports = getPortsForElement(this.props.element);
@@ -336,6 +384,16 @@ export const connectable = (
     private onPointerDown = (event: React.PointerEvent<SVGSVGElement>) => {
       const direction = event.currentTarget.getAttribute('direction') as Direction;
       const id = event.currentTarget.parentElement!.getAttribute('id') as string;
+      
+      // Arrêter la propagation de l'événement pour qu'il ne soit pas capturé par d'autres éléments
+      event.stopPropagation();
+      
+      // Adapter le comportement pour les associations avec le point central
+      const { element } = this.props;
+      if (element && UMLRelationship.isUMLRelationship(element) && direction === Direction.Center) {
+        console.log('Starting connection from relationship center point', element.id);
+      }
+      
       this.props.start(direction, id);
     };
 
