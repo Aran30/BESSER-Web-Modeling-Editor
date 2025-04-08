@@ -69,35 +69,7 @@ export const composeBotPreview: ComposePreview = (
   });
   botState.ownedElements = [botBody.id];
   elements.push(...(botState.render(layer, [botBody]) as UMLElement[]));
-  // Empty State
-  const emptyState = new UMLState({ name: "State" });
-  emptyState.bounds = {
-    ...emptyState.bounds,
-    width: emptyState.bounds.width,
-    height: emptyState.bounds.height,
-  };
-  elements.push(emptyState);
-
-  // State with Body
-  const stateWithBody = new UMLState({ name: "State" });
-  stateWithBody.bounds = {
-    ...stateWithBody.bounds,
-    width: stateWithBody.bounds.width,
-    height: stateWithBody.bounds.height,
-  };
-  const stateBody = new UMLStateBody({
-    name: "Body",
-    owner: stateWithBody.id,
-    bounds: {
-      x: 0,
-      y: 0,
-      width: computeDimension(1.0, 200),
-      height: computeDimension(1.0, 30),
-    },
-  });
-  stateWithBody.ownedElements = [stateBody.id];
-  elements.push(...(stateWithBody.render(layer, [stateBody]) as UMLElement[]));
-
+  
   // State with Body and Fallback Body
   const stateWithBothBodies = new UMLState({ name: "State" });
   stateWithBothBodies.bounds = {

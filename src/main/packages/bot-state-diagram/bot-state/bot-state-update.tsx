@@ -91,7 +91,8 @@ class StateUpdate extends Component<Props, State> {
   newFallbackBodyField = createRef<Textfield<string>>();
   newBodyField = createRef<Textfield<string>>();
   private actionTypeRef = createRef<HTMLInputElement>();
-  textReplyRef = true;
+  textReplyRefBody = true;
+  textReplyRefFallbackBody = true;
   private toggleColor = () => {
     this.setState((state) => ({
       colorOpen: !state.colorOpen,
@@ -137,7 +138,9 @@ class StateUpdate extends Component<Props, State> {
     const bodies = children.filter(
       (child): child is BotStateMember => child instanceof BotStateBody
     );
-    const fallbackBodies = children.filter((child) => child instanceof BotStateFallbackBody);
+    const fallbackBodies = children.filter(
+      (child): child is BotStateMember => child instanceof BotStateFallbackBody
+    );
     const bodyRefs: (Textfield<string> | null)[] = [];
     const fallbackBodyRefs: (Textfield<string> | null)[] = [];
 
@@ -171,7 +174,7 @@ class StateUpdate extends Component<Props, State> {
                 value="textReply"
                 defaultChecked
                 onChange={() => {
-                  this.textReplyRef = true
+                  this.textReplyRefBody = true
                   this.forceUpdate()
                 }}
               />
@@ -183,7 +186,7 @@ class StateUpdate extends Component<Props, State> {
                 name="actionType"
                 value="pythonCode"
                 onChange={() => {
-                  this.textReplyRef = false
+                  this.textReplyRefBody = false
                   this.forceUpdate()
                 }}
               />
@@ -192,7 +195,7 @@ class StateUpdate extends Component<Props, State> {
           </div>
 
           {/* Conditionally render based on the selected radio button */}
-          {this.textReplyRef ? (
+          {this.textReplyRefBody ? (
             <>
               {bodies
                 .filter((body) => body.replyType === "text")
@@ -287,44 +290,134 @@ class StateUpdate extends Component<Props, State> {
         <section>
           <Divider />
           <Header>{this.props.translate('popup.fallback_bodies')}</Header>
-          {fallbackBodies.map((fallbackBody, index) => (
-            <BotBodyUpdate
-              id={fallbackBody.id}
-              key={fallbackBody.id}
-              value={fallbackBody.name}
-              onChange={this.props.update}
-              onSubmitKeyUp={() =>
-                index === fallbackBodies.length - 1
-                  ? this.newFallbackBodyField.current?.focus()
-                  : this.setState({
-                    fieldToFocus: fallbackBodyRefs[index + 1],
-                  })
-              }
-              onDelete={this.delete}
-              onRefChange={(ref) => (fallbackBodyRefs[index] = ref)}
-              element={fallbackBody}
-            />
-          ))}
-          <Textfield
-            ref={this.newFallbackBodyField}
-            outline
-            value=""
-            onSubmit={this.create(BotStateFallbackBody, "text")}
-            onSubmitKeyUp={() =>
-              this.setState({
-                fieldToFocus: this.newFallbackBodyField.current,
-              })
-            }
-            onKeyDown={(event) => {
-              if (event.key === 'Tab' && event.currentTarget.value) {
-                event.preventDefault();
-                event.currentTarget.blur();
-                this.setState({
-                  fieldToFocus: this.newFallbackBodyField.current,
-                });
-              }
-            }}
+          <Flex>
+            <Textfield value={element.name} onChange={this.rename(element.id)} autoFocus />
+            <ColorButton onClick={this.toggleColor} />
+            <Button color="link" tabIndex={-1} onClick={this.delete(element.id)}>
+              <TrashIcon />
+            </Button>
+          </Flex>
+          <StylePane
+            open={this.state.colorOpen}
+            element={element}
+            onColorChange={this.props.update}
+            fillColor
+            lineColor
+            textColor
           />
+          <Divider />
+        </section>
+        <section>
+          Bot Fallback Action
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="fallbackActionType"
+                value="textReply"
+                defaultChecked
+                onChange={() => {
+                  this.textReplyRefFallbackBody = true
+                  this.forceUpdate()
+                }}
+              />
+              Text Reply
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="fallbackActionType"
+                value="pythonCode"
+                onChange={() => {
+                  this.textReplyRefFallbackBody = false
+                  this.forceUpdate()
+                }}
+              />
+              Python Code
+            </label>
+          </div>
+
+          {/* Conditionally render based on the selected radio button */}
+          {this.textReplyRefFallbackBody ? (
+            <>
+              {fallbackBodies
+                .filter((fallbackBody) => fallbackBody.replyType === "text")
+                .map((fallbackBody, index) => (
+                  <BotBodyUpdate
+                    id={fallbackBody.id}
+                    key={fallbackBody.id}
+                    value={fallbackBody.name}
+                    onChange={this.props.update}
+                    onSubmitKeyUp={() =>
+                      index === fallbackBodies.length - 1
+                        ? this.newFallbackBodyField.current?.focus()
+                        : this.setState({
+                          fieldToFocus: fallbackBodyRefs[index + 1],
+                        })
+                    }
+                    onDelete={this.delete}
+                    onRefChange={(ref) => (fallbackBodyRefs[index] = ref)}
+                    element={fallbackBody}
+                  />
+                ))}
+              <Textfield
+                ref={this.newFallbackBodyField}
+                outline
+                value=""
+                onSubmit={this.create(BotStateFallbackBody, "text")}
+                onSubmitKeyUp={() =>
+                  this.setState({
+                    fieldToFocus: this.newFallbackBodyField.current,
+                  })
+                }
+                onKeyDown={(event) => {
+                  if (event.key === 'Tab' && event.currentTarget.value) {
+                    event.preventDefault();
+                    event.currentTarget.blur();
+                    this.setState({
+                      fieldToFocus: this.newFallbackBodyField.current,
+                    });
+                  }
+                }}
+              />
+            </>
+          ) : (
+            <>
+              {fallbackBodies.some((fallbackBody) => fallbackBody.replyType === "code") ? (
+              <StyledTextArea
+                value={fallbackBodies.find((fallbackBody) => fallbackBody.replyType === "code")!.name}
+                placeholder="Enter your Python code here..."
+                onChange={(event) => {
+                const fallbackBody = fallbackBodies.find((fallbackBody) => fallbackBody.replyType === "code")!;
+                const value = event.target.value;
+                if (value.trim()) {
+                  this.props.update(fallbackBody.id, { name: value });
+                } else {
+                  this.props.remove(fallbackBody.id); // Updated to use the renamed method
+                }
+                }}
+                onKeyDown={this.handleKeyDown}
+                autoFocus
+                spellCheck={false}
+              />
+              ) : (
+              <StyledTextArea
+                placeholder="Enter your Python code here..."
+                onChange={(event) => {
+                const value = event.target.value;
+                if (value.trim()) {
+                  this.create(BotStateBody, "code")(value);
+                }
+                }}
+                onKeyDown={this.handleKeyDown}
+                autoFocus
+                spellCheck={false}
+              />
+              )}
+            </>
+
+          )}
+        
         </section>
       </div>
     );
