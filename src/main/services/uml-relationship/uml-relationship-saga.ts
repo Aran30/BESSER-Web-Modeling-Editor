@@ -87,13 +87,18 @@ function* layoutElement(): SagaIterator {
   const relationships = Object.values(elements).filter((x): x is IUMLRelationship =>
     UMLRelationship.isUMLRelationship(x),
   );
-  const updates: string[] = [];
+  
+  // Track both directly and indirectly affected relationships
+  const directUpdates: string[] = [];
+  const allUpdates = new Set<string>();
 
+  // First pass: find direct relationships connected to moved elements
   loop: for (const relationship of relationships) {
     let source: string | null = relationship.source.element;
     while (source) {
       if (action.payload.ids.includes(source)) {
-        updates.push(relationship.id);
+        directUpdates.push(relationship.id);
+        allUpdates.add(relationship.id);
         continue loop;
       }
       source = elements[source].owner;
@@ -101,15 +106,50 @@ function* layoutElement(): SagaIterator {
     let target: string | null = relationship.target.element;
     while (target) {
       if (action.payload.ids.includes(target)) {
-        updates.push(relationship.id);
+        directUpdates.push(relationship.id);
+        allUpdates.add(relationship.id);
         continue loop;
       }
       target = elements[target].owner;
     }
   }
 
-  for (const id of [...new Set([...updates])]) {
+  // Process the direct updates first
+  for (const id of directUpdates) {
     yield call(recalc, id);
+  }
+
+  // Second pass: find relationships connected to relationships that were updated
+  // We may need multiple passes to handle deeply nested relationship chains
+  let updatedInLastPass = [...directUpdates];
+  let additionalUpdates: string[] = [];
+
+  // Continue until no new updates are found
+  while (updatedInLastPass.length > 0) {
+    additionalUpdates = [];
+    
+    // Look for relationships connected to relationships updated in previous pass
+    for (const relationship of relationships) {
+      // Skip if this relationship was already updated
+      if (allUpdates.has(relationship.id)) {
+        continue;
+      }
+      
+      // Check if this relationship connects to any updated relationship
+      if (updatedInLastPass.includes(relationship.source.element) || 
+          updatedInLastPass.includes(relationship.target.element)) {
+        additionalUpdates.push(relationship.id);
+        allUpdates.add(relationship.id);
+      }
+    }
+    
+    // Update these relationships
+    for (const id of additionalUpdates) {
+      yield call(recalc, id);
+    }
+    
+    // Prepare for next pass
+    updatedInLastPass = [...additionalUpdates];
   }
 }
 
@@ -147,8 +187,22 @@ export function* recalc(id: string): SagaIterator {
     return;
   }
 
-  const source = UMLElementRepository.get(elements[relationship.source.element]);
-  const target = UMLElementRepository.get(elements[relationship.target.element]);
+  // Check if source is a relationship
+  let source;
+  if (UMLRelationship.isUMLRelationship(elements[relationship.source.element])) {
+    source = UMLRelationshipRepository.get(elements[relationship.source.element]);
+  } else {
+    source = UMLElementRepository.get(elements[relationship.source.element]);
+  }
+
+  // Check if target is a relationship
+  let target;
+  if (UMLRelationship.isUMLRelationship(elements[relationship.target.element])) {
+    target = UMLRelationshipRepository.get(elements[relationship.target.element]);
+  } else {
+    target = UMLElementRepository.get(elements[relationship.target.element]);
+  }
+  
   if (!source || !target) {
     return;
   }

@@ -21,7 +21,7 @@ export interface IUMLRelationship extends IUMLElement {
 
 export abstract class UMLRelationship extends UMLElement implements IUMLRelationship {
   static features: UMLRelationshipFeatures = {
-    connectable: true, // Changed from false to true
+    connectable: true,
     droppable: false,
     hoverable: true,
     movable: false,
@@ -33,6 +33,9 @@ export abstract class UMLRelationship extends UMLElement implements IUMLRelation
     variable: true,
     alternativePortVisualization: false,
   };
+
+  // Define supported relationships for UMLRelationship
+  static supportedRelationships: UMLRelationshipType[] = Object.values(UMLRelationshipType);
 
   static isUMLRelationship = (element: IUMLElement): element is IUMLRelationship => {
     return element.type in UMLRelationshipType;
@@ -85,10 +88,18 @@ export abstract class UMLRelationship extends UMLElement implements IUMLRelation
 
   render(canvas: ILayer, source?: UMLElement, target?: UMLElement): ILayoutable[] {
     if (!source || !target) {
+      console.warn('Cannot render relationship: source or target is missing', {
+        sourceId: source?.id || 'NULL',
+        targetId: target?.id || 'NULL',
+        relationshipId: this.id
+      });
       return [this];
     }
 
     const { straight, variable } = (this.constructor as typeof UMLRelationship).features;
+    
+
+    
     const path = Connection.computePath(
       { element: source, direction: this.source.direction },
       { element: target, direction: this.target.direction },

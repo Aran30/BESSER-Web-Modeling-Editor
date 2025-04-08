@@ -3,8 +3,8 @@ import { Direction } from '../uml-element/uml-element-port';
 import { IUMLRelationship } from './uml-relationship';
 
 /**
- * Calcule la position exacte du port central d'une relation
- * Cette fonction est plus précise que le simple centre du rectangle englobant
+ * Calculates the exact position of the central port of a relationship
+ * This function is more precise than simply using the center of the bounding rectangle
  */
 export function getRelationshipCenterPoint(relationship: IUMLRelationship): Point {
   if (!relationship || !relationship.path || relationship.path.length < 2) {
@@ -14,10 +14,10 @@ export function getRelationshipCenterPoint(relationship: IUMLRelationship): Poin
     );
   }
   
-  // Pour un chemin à segments multiples, trouver un point milieu
+  // For a multi-segment path, find a middle point
   const middleIndex = Math.floor(relationship.path.length / 2);
   
-  // Si on est à l'index 0, utiliser un point entre 0 et 1
+  // If we're at index 0, use a point between 0 and 1
   if (middleIndex === 0) {
     const startPoint = relationship.path[0];
     const endPoint = relationship.path[1];
@@ -27,11 +27,11 @@ export function getRelationshipCenterPoint(relationship: IUMLRelationship): Poin
     );
   }
   
-  // Sinon utiliser le point milieu du segment
+  // Otherwise use the middle point of the segment
   const startPoint = relationship.path[middleIndex - 1];
   const endPoint = relationship.path[middleIndex];
   
-  // Obtenir le point milieu du segment
+  // Get the middle point of the segment
   return new Point(
     startPoint.x + (endPoint.x - startPoint.x) / 2,
     startPoint.y + (endPoint.y - startPoint.y) / 2
@@ -39,9 +39,10 @@ export function getRelationshipCenterPoint(relationship: IUMLRelationship): Poin
 }
 
 /**
- * Obtient tous les ports pour une relation, avec le port central correctement positionné
+ * Gets all ports for a relationship, with the central port correctly positioned
  */
 export function getPortsForRelationship(relationship: IUMLRelationship): { [key in Direction]: Point } {
+
   if (!relationship || !relationship.bounds) {
     // Return default ports if relationship is invalid
     return Object.values(Direction).reduce((acc, dir) => {
@@ -50,10 +51,11 @@ export function getPortsForRelationship(relationship: IUMLRelationship): { [key 
     }, {} as { [key in Direction]: Point });
   }
   
-  // Calculer le point central avec précision
+  // Calculate the central point with precision
   const centerPoint = getRelationshipCenterPoint(relationship);
+
   
-  // Retourner le point central et les points standards
+  // Return the central point and standard points
   return {
     [Direction.Up]: new Point(relationship.bounds.width / 2, 0),
     [Direction.Right]: new Point(relationship.bounds.width, relationship.bounds.height / 2),
