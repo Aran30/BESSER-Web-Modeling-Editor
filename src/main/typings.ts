@@ -61,6 +61,20 @@ export type UMLModelElement = {
   assessmentNote?: string;
 };
 
+export type BotModelElement = {
+  id: string;
+  name: string;
+  type: UMLModelElementType;
+  owner: string | null;
+  bounds: IBoundary;
+  highlight?: string;
+  fillColor?: string;
+  strokeColor?: string;
+  textColor?: string;
+  assessmentNote?: string;
+  replyType: string;
+};
+
 export type UMLElement = UMLModelElement & {
   type: UMLElementType;
 };
@@ -90,7 +104,19 @@ export interface UMLState extends UMLElement {
   fallbackBodies: string[];
 }
 
+export interface BotState extends UMLElement {
+  type: UMLElementType;
+  bodies: string[];
+  fallbackBodies: string[];
+  replyType: string;
+}
+
 export interface UMLIntent extends UMLElement {
+  type: UMLElementType;
+  bodies: string[];
+}
+
+export interface UMLReply extends UMLElement {
   type: UMLElementType;
   bodies: string[];
 }

@@ -13,7 +13,7 @@ import { ColorLegendElementType } from './common/color-legend';
 import { ReachabilityGraphElementType } from './uml-reachability-graph';
 import { BPMNElementType } from './bpmn';
 import { StateElementType } from './uml-state-diagram';
-import { BotStateElementType } from './bot-state-diagram';
+import { AgentElementType } from './bot-state-diagram';
 
 export type UMLElementType =
   | keyof typeof ClassElementType
@@ -30,7 +30,7 @@ export type UMLElementType =
   | keyof typeof ColorLegendElementType
   | keyof typeof BPMNElementType
   | keyof typeof StateElementType
-  | keyof typeof BotStateElementType;
+  | keyof typeof AgentElementType;
 
 export const UMLElementType = {
   ...ClassElementType,
@@ -47,7 +47,7 @@ export const UMLElementType = {
   ...ColorLegendElementType,
   ...BPMNElementType,
   ...StateElementType,
-  ...BotStateElementType,
+  ...AgentElementType,
 };
 
 export const UMLElementsForDiagram: { [key in UMLDiagramType]: any } = {
@@ -65,7 +65,7 @@ export const UMLElementsForDiagram: { [key in UMLDiagramType]: any } = {
     [UMLDiagramType.Flowchart]: FlowchartElementType,
     [UMLDiagramType.BPMN]: BPMNElementType,
     [UMLDiagramType.StateMachineDiagram]: StateElementType,
-    [UMLDiagramType.BotStateMachineDiagram]: BotStateElementType,
+    [UMLDiagramType.AgentDiagram]: AgentElementType,
   },
   // ...ColorLegendElementType,
   

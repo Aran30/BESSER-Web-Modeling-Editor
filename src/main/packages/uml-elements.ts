@@ -68,6 +68,9 @@ import { UMLStateCodeBlock } from './uml-state-diagram/uml-state-code-block/uml-
 
 import { Intent } from './bot-state-diagram/intent-object-component/intent';
 import { IntentBody } from './bot-state-diagram/intent-body/intent-body';
+import { BotState } from './bot-state-diagram/bot-state/bot-state';
+import { BotStateBody } from './bot-state-diagram/bot-state-body/bot-state-body';
+import { BotStateFallbackBody } from './bot-state-diagram/bot-state-fallback-body/bot-state-fallback-body';
 
 
 export const UMLElements = {
@@ -139,4 +142,7 @@ export const UMLElements = {
   [UMLElementType.StateCodeBlock]: UMLStateCodeBlock,
   [UMLElementType.Intent]: Intent,
   [UMLElementType.IntentBody]: IntentBody,
+  [UMLElementType.BotState]: BotState,
+  [UMLElementType.BotStateBody]: BotStateBody,
+  [UMLElementType.BotStateFallbackBody]: BotStateFallbackBody,
 };

@@ -6,7 +6,8 @@ import { ComposePreview } from '../compose-preview';
 
 
 import { Intent } from './intent-object-component/intent';
-import { IntentBody } from './intent-body/intent-body';
+
+import { Reply } from './reply-component/reply';
 
 import { UMLState } from '../uml-state-diagram/uml-state/uml-state';
 import { UMLStateFinalNode } from '../uml-state-diagram/uml-state-final-node/uml-state-final-node';
@@ -15,6 +16,9 @@ import { UMLStateCodeBlock } from '../uml-state-diagram/uml-state-code-block/uml
 import { UMLStateBody } from '../uml-state-diagram/uml-state-body/uml-state-body';
 import { UMLStateFallbackBody } from '../uml-state-diagram/uml-state-fallback_body/uml-state-fallback_body';
 
+import { BotState } from './bot-state/bot-state';
+import { BotStateBody } from './bot-state-body/bot-state-body';
+import { BotStateFallbackBody } from './bot-state-fallback-body/bot-state-fallback-body';
 
 const computeDimension = (scale: number, value: number): number => {
   return Math.round((scale * value) / 10) * 10;
@@ -38,8 +42,33 @@ export const composeBotPreview: ComposePreview = (
   };
   elements.push(emptyIntent);
 
+   // Empty State
+   const emptyBotState = new BotState({ name: "BotState" });
+   emptyBotState.bounds = {
+     ...emptyBotState.bounds,
+     width: emptyBotState.bounds.width,
+     height: emptyBotState.bounds.height,
+   };
+   elements.push(emptyBotState);
 
-
+   const botState = new BotState({ name: "BotState" });
+   botState.bounds = {
+     ...botState.bounds,
+     width: botState.bounds.width,
+     height: botState.bounds.height,
+   };
+   const botBody = new BotStateBody({
+    name: "Body",
+    owner: botState.id,
+    bounds: {
+      x: 0,
+      y: 0,
+      width: computeDimension(1.0, 200),
+      height: computeDimension(1.0, 30),
+    },
+  });
+  botState.ownedElements = [botBody.id];
+  elements.push(...(botState.render(layer, [botBody]) as UMLElement[]));
   // Empty State
   const emptyState = new UMLState({ name: "State" });
   emptyState.bounds = {
@@ -151,12 +180,12 @@ export const composeBotPreview: ComposePreview = (
   // elements.push(stateForkNodeHorizontal);
 
   // State Code Block
-  const stateCodeBlock = new UMLStateCodeBlock({
+  /*const stateCodeBlock = new UMLStateCodeBlock({
     code: '# Sample code\nprint("Hello Worldd")',
     language: 'python',
     bounds: { x: 0, y: 0, width: 150, height: 150 }
   });
-  elements.push(stateCodeBlock);
+  elements.push(stateCodeBlock);*/
 
   return elements;
 };

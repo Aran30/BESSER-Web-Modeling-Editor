@@ -9,7 +9,8 @@ import * as Apollon from '../../../typings';
 import { assign } from '../../../utils/fx/assign';
 import { Text } from '../../../utils/svg/text';
 import { UMLElementType } from '../../uml-element-type';
-import { IntentBody } from '../intent-body/intent-body';
+import { BotStateBody } from '../bot-state-body/bot-state-body';
+import { BotStateFallbackBody } from '../bot-state-fallback-body/bot-state-fallback-body';
 
 export interface IUMLState extends IUMLContainer {
   italic: boolean;
@@ -17,9 +18,10 @@ export interface IUMLState extends IUMLContainer {
   stereotype: string | null;
   deviderPosition: number;
   hasBody: boolean;
+  hasFallbackBody: boolean;
 }
 
-export class Intent extends UMLContainer implements IUMLState {
+export class BotState extends UMLContainer implements IUMLState {
   static features: UMLElementFeatures = {
     ...UMLContainer.features,
     droppable: false,
@@ -28,15 +30,16 @@ export class Intent extends UMLContainer implements IUMLState {
   static stereotypeHeaderHeight = 50;
   static nonStereotypeHeaderHeight = 40;
 
-  type: UMLElementType = AgentElementType.Intent;
+  type: UMLElementType = AgentElementType.BotState;
   italic: boolean = false;
   underline: boolean = false;
   stereotype: string | null = null;
   deviderPosition: number = 0;
   hasBody: boolean = false;
+  hasFallbackBody: boolean = false;
 
   get headerHeight() {
-    return this.stereotype ? Intent.stereotypeHeaderHeight : Intent.nonStereotypeHeaderHeight;
+    return this.stereotype ? BotState.stereotypeHeaderHeight : BotState.nonStereotypeHeaderHeight;
   }
 
   constructor(values?: DeepPartial<IUMLState>) {
@@ -45,25 +48,29 @@ export class Intent extends UMLContainer implements IUMLState {
   }
 
   reorderChildren(children: IUMLElement[]): string[] {
-    const bodies = children.filter((x): x is IntentBody => x.type === AgentElementType.IntentBody);
-    return [...bodies.map((element) => element.id)];
+    const bodies = children.filter((x): x is BotStateBody => x.type === AgentElementType.BotStateBody);
+    const fallbackBodies = children.filter((x): x is BotStateFallbackBody => x.type === AgentElementType.BotStateFallbackBody);
+    return [...bodies.map((element) => element.id), ...fallbackBodies.map((element) => element.id)];
   }
 
-  serialize(children: UMLElement[] = []): Apollon.UMLIntent {
+  serialize(children: UMLElement[] = []): Apollon.UMLState {
     return {
       ...super.serialize(children),
       type: this.type as UMLElementType,
-      bodies: children.filter((x) => x instanceof IntentBody).map((x) => x.id)
+      bodies: children.filter((x) => x instanceof BotStateBody).map((x) => x.id),
+      fallbackBodies: children.filter((x) => x instanceof BotStateFallbackBody).map((x) => x.id),
     };
   }
 
   render(layer: ILayer, children: ILayoutable[] = []): ILayoutable[] {
-    const bodies = children.filter((x): x is IntentBody => x instanceof IntentBody);
+    const bodies = children.filter((x): x is BotStateBody => x instanceof BotStateBody);
+    const fallbackBodies = children.filter((x): x is BotStateFallbackBody => x instanceof BotStateFallbackBody);
 
     this.hasBody = bodies.length > 0;
+    this.hasFallbackBody = fallbackBodies.length > 0;
 
     const radix = 10;
-    this.bounds.width = [this, ...bodies].reduce(
+    this.bounds.width = [this, ...bodies, ...fallbackBodies].reduce(
       (current, child, index) =>
         Math.max(
           current,
@@ -82,9 +89,14 @@ export class Intent extends UMLContainer implements IUMLState {
       y += body.bounds.height;
     }
     this.deviderPosition = y;
-
+    for (const fallbackBody of fallbackBodies) {
+      fallbackBody.bounds.x = 0.5;
+      fallbackBody.bounds.y = y + 0.5;
+      fallbackBody.bounds.width = this.bounds.width - 1;
+      y += fallbackBody.bounds.height;
+    }
 
     this.bounds.height = y;
-    return [this, ...bodies];
+    return [this, ...bodies, ...fallbackBodies];
   }
 }

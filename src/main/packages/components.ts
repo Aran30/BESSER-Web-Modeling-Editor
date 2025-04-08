@@ -78,7 +78,9 @@ import { UMLStateMemberComponent } from './uml-state-diagram/uml-state/uml-state
 
 import { IntentComponent } from './bot-state-diagram/intent-object-component/intent-object-component';
 import { IntentMemberComponent } from './bot-state-diagram/intent-object-component/intent-member-component';
-import { Intent } from './bot-state-diagram/intent-object-component/intent';
+
+import { BotStateComponent } from './bot-state-diagram/bot-state/bot-state-component';
+import { BotStateMemberComponent } from './bot-state-diagram/bot-state/bot-state-member-component';
 
 
 export const Components: {
@@ -183,4 +185,7 @@ export const Components: {
 
   [UMLElementType.Intent]: IntentComponent,
   [UMLElementType.IntentBody]: IntentMemberComponent,
+  [UMLElementType.BotState]: BotStateComponent,
+  [UMLElementType.BotStateBody]: BotStateMemberComponent,
+  [UMLElementType.BotStateFallbackBody]: BotStateMemberComponent,
 };

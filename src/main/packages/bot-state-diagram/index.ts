@@ -1,6 +1,7 @@
+import { BotState } from "./bot-state/bot-state";
 import { Intent } from "./intent-object-component/intent";
 
-export const BotStateElementType = {
+export const AgentElementType = {
   State: 'State',
   StateBody: 'StateBody',
   IntentBody: 'IntentBody',
@@ -14,8 +15,13 @@ export const BotStateElementType = {
   StateObjectNode: 'StateObjectNode',
   StateCodeBlock: 'StateCodeBlock',
   Intent: 'Intent',
+  ReplyBody: 'ReplyBody',
+  Reply: 'Reply',
+  BotState: 'BotState',
+  BotStateBody: 'BotStateBody',
+  BotStateFallbackBody: 'BotStateFallbackBody',
 } as const;
 
-export const BotStateRelationshipType = {
+export const AgentRelationshipType = {
   StateTransition: 'StateTransition',
 } as const;

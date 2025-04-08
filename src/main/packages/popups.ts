@@ -42,6 +42,7 @@ import { UMLStateCodeBlockUpdate } from './uml-state-diagram/uml-state-code-bloc
 import { UMLStateUpdate } from './uml-state-diagram/uml-state/uml-state-update';
 
 import { IntentBodyUpdate } from './bot-state-diagram/intent-object-component/intent-update';
+import { ReplyBodyUpdate } from './bot-state-diagram/reply-component/reply-update';
 
 export type Popups = { [key in UMLElementType | UMLRelationshipType]: ComponentType<{ element: any }> | null };
 export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentType<{ element: any }> | null } = {
@@ -114,6 +115,8 @@ export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentT
   [UMLElementType.StateCodeBlock]: UMLStateCodeBlockUpdate,
   [UMLElementType.Intent]: IntentBodyUpdate,
   [UMLElementType.IntentBody]: null,
+  [UMLElementType.Reply]: ReplyBodyUpdate,
+  [UMLElementType.ReplyBody]: null,
   // Relationships
   [UMLRelationshipType.ClassAggregation]: UMLClassAssociationUpdate,
   [UMLRelationshipType.ClassBidirectional]: UMLClassAssociationUpdate,

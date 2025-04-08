@@ -91,7 +91,7 @@ const getInitialState = ({ type, canvas, translate, colorEnabled }: Props) => {
     case UMLDiagramType.StateMachineDiagram:
       previews.push(...composeStatePreview(canvas, translate));
       break;
-    case UMLDiagramType.BotStateMachineDiagram:
+    case UMLDiagramType.AgentDiagram:
       previews.push(...composeBotPreview(canvas, translate));
       break;  
   }

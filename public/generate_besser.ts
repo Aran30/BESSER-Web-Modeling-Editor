@@ -15,14 +15,15 @@ export async function exportBuml(editorInstance: any) {
     }
 
 
-    const response = await fetch('http://localhost:8000/export-buml', {
+    const response = await fetch('http://localhost:8000/besser_api/export-buml', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         elements: diagramData,
-        generator: "buml",
+        generator: 'buml',
+        diagramTitle: 'test'
       }),
     });
 
@@ -39,6 +40,8 @@ export async function exportBuml(editorInstance: any) {
     // Determine filename based on diagram type
     const filename = editorInstance.model.type === 'StateMachineDiagram' 
       ? 'state_machine.py' 
+      : editorInstance.model.type === 'AgentDiagram' 
+      ? 'agent.py' 
       : 'domain_model.py';
     
     a.download = filename;
@@ -81,7 +84,7 @@ export async function generateOutput(generatorType: string) {
       return;
     }
 
-    const response = await fetch('http://localhost:8000/generate-output', {
+    const response = await fetch('http://localhost:8000/besser_api/generate-output', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -161,7 +164,7 @@ export async function checkOclConstraints(editorInstance: any) {
 
     const diagramData = getDiagramData(editorInstance);
 
-    const response = await fetch('http://localhost:8000/check-ocl', {
+    const response = await fetch('http://localhost:8000/besser_api/check-ocl', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

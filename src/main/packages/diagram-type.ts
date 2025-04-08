@@ -14,5 +14,5 @@ export const UMLDiagramType = {
   Flowchart: 'Flowchart',
   BPMN: 'BPMN',
   StateMachineDiagram: 'StateMachineDiagram',
-  BotStateMachineDiagram: 'BotStateMachineDiagram'
+  AgentDiagram: 'AgentDiagram'
 } as const;

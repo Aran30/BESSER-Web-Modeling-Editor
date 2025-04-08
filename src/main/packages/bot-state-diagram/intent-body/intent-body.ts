@@ -1,6 +1,6 @@
 import { IntentMember } from '../intent-object-component/intent-member';
-import { BotStateElementType } from '..';
+import { AgentElementType } from '..';
 
 export class IntentBody extends IntentMember {
-  type = BotStateElementType.IntentBody;
+  type = AgentElementType.IntentBody;
 }

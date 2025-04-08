@@ -510,7 +510,7 @@ window.addEventListener('load', () => {
       //   actualType: diagramData.type
       // });
       
-      if (diagramData.type === 'StateMachineDiagram' || diagramData.type === 'ClassDiagram') {
+      if (diagramData.type === 'StateMachineDiagram' || diagramData.type === 'ClassDiagram' || diagramData.type === 'AgentDiagram') {
         try {
           await exportBuml(currentEditor);
         } catch (error) {

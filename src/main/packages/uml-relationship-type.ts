@@ -13,7 +13,7 @@ import { FlowchartRelationshipType } from './flowchart';
 import { BPMNRelationshipType } from './bpmn';
 import { StateRelationshipType } from './uml-state-diagram';
 
-import { BotStateRelationshipType } from './bot-state-diagram';
+import { AgentRelationshipType } from './bot-state-diagram';
 
 export type UMLRelationshipType =
   | keyof typeof ClassRelationshipType
@@ -29,7 +29,7 @@ export type UMLRelationshipType =
   | keyof typeof FlowchartRelationshipType
   | keyof typeof BPMNRelationshipType
   | keyof typeof StateRelationshipType
-  | keyof typeof BotStateRelationshipType;
+  | keyof typeof AgentRelationshipType;
 
 export const UMLRelationshipType = {
   ...ClassRelationshipType,
@@ -45,7 +45,7 @@ export const UMLRelationshipType = {
   ...FlowchartRelationshipType,
   ...BPMNRelationshipType,
   ...StateRelationshipType,
-  ...BotStateRelationshipType,
+  ...AgentRelationshipType,
 };
 
 export const DefaultUMLRelationshipType: { [key in UMLDiagramType]: UMLRelationshipType } = {
@@ -62,5 +62,5 @@ export const DefaultUMLRelationshipType: { [key in UMLDiagramType]: UMLRelations
   [UMLDiagramType.Flowchart]: FlowchartRelationshipType.FlowchartFlowline,
   [UMLDiagramType.BPMN]: BPMNRelationshipType.BPMNFlow,
   [UMLDiagramType.StateMachineDiagram]: StateRelationshipType.StateTransition,
-  [UMLDiagramType.BotStateMachineDiagram]: StateRelationshipType.StateTransition,
+  [UMLDiagramType.AgentDiagram]: StateRelationshipType.StateTransition,
 };
