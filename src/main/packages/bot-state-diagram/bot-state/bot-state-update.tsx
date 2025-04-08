@@ -289,23 +289,7 @@ class StateUpdate extends Component<Props, State> {
         </section>
         <section>
           <Divider />
-          <Header>{this.props.translate('popup.fallback_bodies')}</Header>
-          <Flex>
-            <Textfield value={element.name} onChange={this.rename(element.id)} autoFocus />
-            <ColorButton onClick={this.toggleColor} />
-            <Button color="link" tabIndex={-1} onClick={this.delete(element.id)}>
-              <TrashIcon />
-            </Button>
-          </Flex>
-          <StylePane
-            open={this.state.colorOpen}
-            element={element}
-            onColorChange={this.props.update}
-            fillColor
-            lineColor
-            textColor
-          />
-          <Divider />
+
         </section>
         <section>
           Bot Fallback Action
