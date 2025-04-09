@@ -80,15 +80,6 @@ export const Connectable = {
         const isSourceRelationship = sourceElement && UMLRelationship.isUMLRelationship(sourceElement);
         const isTargetRelationship = targetElement && UMLRelationship.isUMLRelationship(targetElement);
         
-        // Handle center port for relationships
-        if ((isSourceRelationship && port.direction === Direction.Center) || 
-            (isTargetRelationship && connectionTarget.direction === Direction.Center)) {
-          console.log('Connecting with relationship center port', {
-            source: { id: sourceElement?.id, dir: port.direction, isRelationship: isSourceRelationship },
-            target: { id: targetElement?.id, dir: connectionTarget.direction, isRelationship: isTargetRelationship }
-          });
-        }
-
         connections.push({ source: port, target: connectionTarget });
       }
       
@@ -116,22 +107,33 @@ export const Connectable = {
         }
         
         let relationshipType: UMLRelationshipType;
-        // determine the common supported connection types and choose one for the connection
-        if (sourceElement && targetElement) {
-          const commonSupportedConnections = UMLRelationshipCommonRepository.getSupportedConnectionsForElements([
-            sourceElement,
-            targetElement,
-          ]);
-
-          // take the first common supported connection type or default diagram type
-          relationshipType =
-            commonSupportedConnections.length > 0
-              ? commonSupportedConnections[0]
-              : DefaultUMLRelationshipType[getState().diagram.type];
-
+        
+        // Check if this is a connection from a relationship center point - if so, use Link type
+        const isFromRelationshipCenter = UMLRelationship.isUMLRelationship(sourceElement) && 
+          connection.source.direction === Direction.Center;
+          
+        if (isFromRelationshipCenter) {
+          // When connecting from a relationship center, always use Link type
+          relationshipType = UMLRelationshipType.ClassLinkRel;
+          console.log('Setting Link type for connection from relationship center');
         } else {
-          // take default diagram type
-          relationshipType = DefaultUMLRelationshipType[getState().diagram.type];
+          // determine the common supported connection types and choose one for the connection
+          if (sourceElement && targetElement) {
+            const commonSupportedConnections = UMLRelationshipCommonRepository.getSupportedConnectionsForElements([
+              sourceElement,
+              targetElement,
+            ]);
+
+            // take the first common supported connection type or default diagram type
+            relationshipType =
+              commonSupportedConnections.length > 0
+                ? commonSupportedConnections[0]
+                : DefaultUMLRelationshipType[getState().diagram.type];
+
+          } else {
+            // take default diagram type
+            relationshipType = DefaultUMLRelationshipType[getState().diagram.type];
+          }
         }
         
         try {
