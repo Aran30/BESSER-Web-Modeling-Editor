@@ -179,19 +179,26 @@ export const connectable = (
         ? getPortsForRelationship(element as IUMLRelationship) 
         : getPortsForElement(element);
 
+      // Check if we're currently connecting from a relationship center handle
+      // We should use the ModelState directly through props, not this.props.state
+      const connectingFromRelationshipCenter = connecting &&
+        UMLRelationship.isUMLRelationship(element);
+
       return (
         <WrappedComponent {...props}>
           {props.children}
           {(hovered || selected || connecting || reconnecting) && (
             <>
-              {/* Si c'est une relation, on n'affiche que le point du centre */}
-              {isRelationship ? (
-                <CenterHandle
-                  ports={ports}
-                  direction={Direction.Center}
-                  onPointerDown={this.onPointerDown}
-                  onPointerUp={this.onPointerUp}
-                />
+          {/* If it's a relationship, only show center point, but not if we're connecting from another relationship center */}
+          {isRelationship ? (
+            !connectingFromRelationshipCenter && (
+              <CenterHandle
+                ports={ports}
+                direction={Direction.Center}
+                onPointerDown={this.onPointerDown}
+                onPointerUp={this.onPointerUp}
+              />
+            )
               ) : (
                 <>
                   {/* Top edge handles */}

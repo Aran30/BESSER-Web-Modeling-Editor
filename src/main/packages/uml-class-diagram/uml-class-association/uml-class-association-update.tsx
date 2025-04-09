@@ -63,6 +63,7 @@ class ClassAssociationComponent extends Component<Props, State> {
     }));
   };
 
+
   render() {
     const { element, getById } = this.props;
     const source = element.source && getById(element.source.element);
