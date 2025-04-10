@@ -72,8 +72,33 @@ function* update(): SagaIterator {
   const action: UpdateAction = yield take(UMLElementActionTypes.UPDATE);
   const { elements }: ModelState = yield select();
 
+  // Check if this is an update from a property panel
+  // Property panel updates typically have a small number of properties and only for a single element
+  const isLikelyPanelUpdate = action.payload.values.length === 1 && 
+                             (Object.keys(action.payload.values[0]).length <= 3 || 
+                              'name' in action.payload.values[0] || 
+                              'source' in action.payload.values[0] || 
+                              'target' in action.payload.values[0]);
+
   for (const value of action.payload.values) {
     if (!UMLRelationship.isUMLRelationship(elements[value.id])) {
+      continue;
+    }
+    
+    // Skip recalculation for property panel updates if the relationship is manually laid out
+    if (isLikelyPanelUpdate && elements[value.id].isManuallyLayouted) {
+      // If this is a property panel update on a manually laid out relationship,
+      // ensure the isManuallyLayouted flag is preserved
+      yield put<UpdateAction>({
+        type: UMLElementActionTypes.UPDATE,
+        payload: { 
+          values: [{ 
+            id: value.id, 
+            isManuallyLayouted: true 
+          }]
+        },
+        undoable: false
+      });
       continue;
     }
 
