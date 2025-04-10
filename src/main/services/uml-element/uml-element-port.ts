@@ -11,6 +11,7 @@ export enum Direction {
   Topleft = 'Topleft',
   Bottomright = 'Bottomright',
   Bottomleft = 'Bottomleft',
+  Center = 'Center',
 }
 
 export interface IUMLElementPort {
@@ -44,6 +45,8 @@ export function getOppositeDirection(direction: Direction): Direction {
       return Direction.Topright;
     case Direction.Bottomleft:
       return Direction.Bottomright;
+    case Direction.Center:
+      return Direction.Center; // Center is its own opposite
     default:
       throw Error(`Could not determine opposite direction for direction of ${direction}`);
   }

@@ -120,7 +120,7 @@ export const getMarkerForTypeForUMLAssociation = (relationshipType: UMLRelations
       case ClassRelationshipType.ClassRealization:
         return Marker.Triangle;
       case ClassRelationshipType.ClassOCLLink:
-        //return Marker.Arrow;
+        return Marker.Arrow;
     }
   })(relationshipType);
 };
@@ -128,6 +128,8 @@ export const getMarkerForTypeForUMLAssociation = (relationshipType: UMLRelations
 export const UMLAssociationComponent: FunctionComponent<Props> = ({ element }) => {
   const marker = getMarkerForTypeForUMLAssociation(element.type);
   const isInheritance = element.type === ClassRelationshipType.ClassInheritance;
+  // Add special check for OCL Link
+  const isLinkRel = element.type === ClassRelationshipType.ClassLinkRel;
 
   const stroke = ((type) => {
     switch (type) {
@@ -135,6 +137,7 @@ export const UMLAssociationComponent: FunctionComponent<Props> = ({ element }) =
       case ClassRelationshipType.ClassRealization:
         return 7;
       case ClassRelationshipType.ClassOCLLink:
+      case ClassRelationshipType.ClassLinkRel:
         return "5,5";
     }
   })(element.type);
@@ -156,7 +159,7 @@ export const UMLAssociationComponent: FunctionComponent<Props> = ({ element }) =
         markerEnd={`url(#${id})`}
         strokeDasharray={stroke}
       />
-      {!isInheritance && (
+      {!isInheritance && !isLinkRel && (
         <>
           <text
             x={source.x || 0}
