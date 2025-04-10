@@ -153,6 +153,7 @@ function* layoutElement(): SagaIterator {
   }
 }
 
+
 function* deleteElement(): SagaIterator {
   const action: DeleteAction = yield take(UMLElementActionTypes.DELETE);
   const { elements }: ModelState = yield select();

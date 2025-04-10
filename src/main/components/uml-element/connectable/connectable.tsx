@@ -18,7 +18,7 @@ import { convertTouchEndIntoPointerUp } from '../../../utils/touch-event';
 import isMobile from 'is-mobile';
 import { getPortsForElement, IUMLElement } from '../../../services/uml-element/uml-element';
 import { IUMLRelationship, UMLRelationship } from '../../../services/uml-relationship/uml-relationship';
-import { getPortsForRelationship } from '../../../services/uml-relationship/uml-relationship-port';
+import { getPortsForRelationship, canHaveCenterPort } from '../../../services/uml-relationship/uml-relationship-port';
 
 type StateProps = {
   hovered: boolean;
@@ -179,26 +179,30 @@ export const connectable = (
         ? getPortsForRelationship(element as IUMLRelationship) 
         : getPortsForElement(element);
 
-      // Check if we're currently connecting from a relationship center handle
-      // We should use the ModelState directly through props, not this.props.state
-      const connectingFromRelationshipCenter = connecting &&
-        UMLRelationship.isUMLRelationship(element);
+      // // Check if we're currently connecting from a relationship center handle
+      // const connectingFromRelationshipCenter = connecting &&
+      //   UMLRelationship.isUMLRelationship(element);
+      
+      // Check if this relationship type is allowed to have a center port
+      const allowCenterPort = isRelationship && canHaveCenterPort(element as IUMLRelationship);
 
       return (
         <WrappedComponent {...props}>
           {props.children}
           {(hovered || selected || connecting || reconnecting) && (
             <>
-          {/* If it's a relationship, only show center point, but not if we're connecting from another relationship center */}
-          {isRelationship ? (
-            !connectingFromRelationshipCenter && (
-              <CenterHandle
-                ports={ports}
-                direction={Direction.Center}
-                onPointerDown={this.onPointerDown}
-                onPointerUp={this.onPointerUp}
-              />
-            )
+              {/* If it's a relationship with allowed center port, show the center point */}
+              {isRelationship ? (
+                allowCenterPort 
+                // && !connectingFromRelationshipCenter 
+                && (
+                  <CenterHandle
+                    ports={ports}
+                    direction={Direction.Center}
+                    onPointerDown={this.onPointerDown}
+                    onPointerUp={this.onPointerUp}
+                  />
+                )
               ) : (
                 <>
                   {/* Top edge handles */}
@@ -209,7 +213,6 @@ export const connectable = (
                     onPointerUp={this.onPointerUp}
                     alternativePortVisualization={features.alternativePortVisualization}
                   />
-                  {/* ...existing handle definitions... */}
                   <Handle
                     ports={ports}
                     direction={Direction.Up}
@@ -293,6 +296,8 @@ export const connectable = (
                     onPointerUp={this.onPointerUp}
                     alternativePortVisualization={features.alternativePortVisualization}
                   />
+                  
+                  {/* No center handle for regular elements */}
                 </>
               )}
             </>
@@ -325,6 +330,13 @@ export const connectable = (
         event.target.parentElement.hasAttribute('direction')
       ) {
         direction = event.target.parentElement.getAttribute('direction') as Direction;
+        
+        // Skip if trying to use center port on a non-relationship element
+        const isRelationship = UMLRelationship.isUMLRelationship(this.props.element);
+        if (!isRelationship && direction === Direction.Center) {
+          console.warn('Cannot use center port on a non-relationship element');
+          return;
+        }
       }
 
       // otherwise get the direction the old way
@@ -336,6 +348,9 @@ export const connectable = (
           x: (event.clientX - nodeRect.left) / nodeRect.width,
           y: (event.clientY - nodeRect.top) / nodeRect.height,
         };
+
+        // Check if this is a relationship or regular element
+        const isRelationship = UMLRelationship.isUMLRelationship(this.props.element);
 
         // relative port locations in %
         const relativePortLocation: { [key in Direction]: Point } = {
@@ -359,20 +374,21 @@ export const connectable = (
           [Direction.Left]: new Point(0, 0.5),
           [Direction.Downleft]: new Point(0, 0.75),
           
-          // Center point
+          // Center point - only for relationships
           [Direction.Center]: new Point(0.5, 0.5),
         };
-
-        const ports = getPortsForElement(this.props.element);
-
-        // calculate the distances to all handles
-        const distances = Object.entries(ports).map(([key, value]) => ({
-          key,
-          distance: Math.sqrt(
-            Math.pow(relativePortLocation[key as Direction].x - relEventPosition.x, 2) +
-              Math.pow(relativePortLocation[key as Direction].y - relEventPosition.y, 2),
-          ),
-        }));
+        
+        // calculate the distances to all valid handles
+        const distances = Object.entries(relativePortLocation)
+          // Filter out center port for regular elements
+          .filter(([key]) => isRelationship || key !== Direction.Center) 
+          .map(([key, value]) => ({
+            key,
+            distance: Math.sqrt(
+              Math.pow(value.x - relEventPosition.x, 2) +
+                Math.pow(value.y - relEventPosition.y, 2),
+            ),
+          }));
 
         // use handle with min distance to connect to
         const minDistance = Math.min(...distances.map((value) => value.distance));

@@ -1,6 +1,20 @@
 import { Point } from '../../utils/geometry/point';
 import { Direction } from '../uml-element/uml-element-port';
 import { IUMLRelationship } from './uml-relationship';
+import { UMLRelationshipType } from '../../packages/uml-relationship-type';
+
+// Define which relationship types are allowed to have center port connections
+export const RELATIONSHIP_TYPES_WITH_CENTER_PORT: string[] = [
+  'ClassBidirectional',
+  'ClassUnidirectional'
+];
+
+/**
+ * Checks if a relationship type is allowed to have a center port connection
+ */
+export function canHaveCenterPort(relationship: IUMLRelationship): boolean {
+  return RELATIONSHIP_TYPES_WITH_CENTER_PORT.includes(relationship.type);
+}
 
 /**
  * Calculates the exact position of the central port of a relationship
@@ -42,7 +56,6 @@ export function getRelationshipCenterPoint(relationship: IUMLRelationship): Poin
  * Gets all ports for a relationship, with the central port correctly positioned
  */
 export function getPortsForRelationship(relationship: IUMLRelationship): { [key in Direction]: Point } {
-
   if (!relationship || !relationship.bounds) {
     // Return default ports if relationship is invalid
     return Object.values(Direction).reduce((acc, dir) => {
@@ -53,9 +66,11 @@ export function getPortsForRelationship(relationship: IUMLRelationship): { [key 
   
   // Calculate the central point with precision
   const centerPoint = getRelationshipCenterPoint(relationship);
-
   
-  // Return the central point and standard points
+  // Check if this relationship type is allowed to have a center port
+  const hasCenterPort = canHaveCenterPort(relationship);
+  
+  // Return all ports but place the center port based on whether it's allowed
   return {
     [Direction.Up]: new Point(relationship.bounds.width / 2, 0),
     [Direction.Right]: new Point(relationship.bounds.width, relationship.bounds.height / 2),
@@ -69,6 +84,6 @@ export function getPortsForRelationship(relationship: IUMLRelationship): { [key 
     [Direction.Bottomright]: new Point((3 * relationship.bounds.width) / 4, relationship.bounds.height),
     [Direction.Topleft]: new Point(relationship.bounds.width / 4, 0),
     [Direction.Bottomleft]: new Point(relationship.bounds.width / 4, relationship.bounds.height),
-    [Direction.Center]: centerPoint,
+    [Direction.Center]: hasCenterPort ? centerPoint : new Point(-1000, -1000),
   };
 }

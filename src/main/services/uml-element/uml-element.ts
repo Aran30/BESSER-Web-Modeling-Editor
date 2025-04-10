@@ -59,7 +59,7 @@ export const getPortsForElement = (element: IUMLElement): { [key in Direction]: 
       [Direction.Bottomright]: new Point(0, 0),
       [Direction.Topleft]: new Point(0, 0),
       [Direction.Bottomleft]: new Point(0, 0),
-      [Direction.Center]: new Point(0, 0),
+      [Direction.Center]: new Point(-1000, -1000),
     };
   }
   
@@ -76,7 +76,7 @@ export const getPortsForElement = (element: IUMLElement): { [key in Direction]: 
     [Direction.Bottomright]: new Point((3 * element.bounds.width) / 4, element.bounds.height),
     [Direction.Topleft]: new Point(element.bounds.width / 4, 0),
     [Direction.Bottomleft]: new Point(element.bounds.width / 4, element.bounds.height),
-    [Direction.Center]: new Point(element.bounds.width / 2, element.bounds.height / 2),
+    [Direction.Center]: new Point(-1000, -1000),
   };
 };
 
