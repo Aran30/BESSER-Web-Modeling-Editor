@@ -66,6 +66,23 @@ function* layoutRelationship(): SagaIterator {
     payload: { ids: [diagram.id], delta },
     undoable: false,
   });
+  
+  // Now find and update any relationships that connect to the moved relationship
+  const movedRelationshipId = action.payload.id;
+  const relationships = Object.values(elements).filter((x): x is IUMLRelationship =>
+    UMLRelationship.isUMLRelationship(x),
+  );
+  
+  // Find relationships that connect to our moved relationship
+  const connectedRelationships = relationships.filter(relationship => 
+    relationship.source.element === movedRelationshipId || 
+    relationship.target.element === movedRelationshipId
+  ).map(relationship => relationship.id);
+  
+  // Update each connected relationship
+  for (const id of connectedRelationships) {
+    yield call(recalc, id);
+  }
 }
 
 function* update(): SagaIterator {
@@ -244,7 +261,12 @@ export function* recalc(id: string): SagaIterator {
 
   const { path, bounds } = diff(original, updates) as Partial<IUMLRelationship>;
   if (path) {
-    if (relationship.isManuallyLayouted && shouldPreserveLayout(source.id, target.id, selected, editor.readonly)) {
+    // Check if this relationship connects to other relationships
+    const connectsToRelationship = UMLRelationship.isUMLRelationship(elements[relationship.source.element]) || 
+                                  UMLRelationship.isUMLRelationship(elements[relationship.target.element]);
+    
+    // If it connects to another relationship, we should always update its layout
+    if (relationship.isManuallyLayouted && shouldPreserveLayout(source.id, target.id, selected, editor.readonly) && !connectsToRelationship) {
       yield put<WaypointLayoutAction>(
         UMLRelationshipRepository.layoutWaypoints(updates.id, original.path, { ...original.bounds, ...bounds }),
       );
