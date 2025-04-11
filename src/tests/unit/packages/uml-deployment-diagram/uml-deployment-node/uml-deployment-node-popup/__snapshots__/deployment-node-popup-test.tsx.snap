@@ -6,15 +6,15 @@ exports[`test deployment node popup render 1`] = `
     <div>
       <section>
         <div
-          class="sc-bypJrT hnnasP"
+          class="sc-ddjGPC hMjkq"
         >
           <input
-            class="sc-bmzYkS sc-iHGNWf hFRLkv gacFBO"
+            class="sc-iHGNWf sc-dtBdUo eHnZYi kIvhJv"
             maxlength="100"
             value=""
           />
           <button
-            class="sc-eeDRCY sc-koXPp fShmjg dCdHsc"
+            class="sc-koXPp sc-bmzYkS hyqBEI fSLmzE"
             color="link"
             tabindex="-1"
           >
@@ -48,7 +48,7 @@ exports[`test deployment node popup render 1`] = `
             </svg>
           </button>
           <button
-            class="sc-eeDRCY sc-koXPp fShmjg dCdHsc"
+            class="sc-koXPp sc-bmzYkS hyqBEI fSLmzE"
             color="link"
             tabindex="-1"
           >
@@ -68,13 +68,13 @@ exports[`test deployment node popup render 1`] = `
       </section>
       <section>
         <hr
-          class="sc-tagGq XeZYh"
+          class="sc-esYiGF iLojZW"
         />
         <div
-          class="sc-bypJrT hnnasP"
+          class="sc-ddjGPC hMjkq"
         >
           <input
-            class="sc-bmzYkS sc-iHGNWf hFRLkv gacFBO"
+            class="sc-iHGNWf sc-dtBdUo eHnZYi kIvhJv"
             maxlength="100"
             value="node"
           />
