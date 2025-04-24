@@ -88,7 +88,6 @@ export const onChange = async (event: any) => {
     
     if (editor && previousType) {
       const currentModel = editor.model;
-      
       if (options.useSingleStorage) {
         localStorage.setItem('apollon', JSON.stringify(currentModel));
         options.legacyModel = currentModel;
@@ -130,6 +129,11 @@ export const onChange = async (event: any) => {
       const codeGeneratorSection = document.getElementById('codeGeneratorSection');
       if (codeGeneratorSection) {
         codeGeneratorSection.style.display = newType === 'ClassDiagram' ? 'block' : 'none';
+      }
+  
+      const agentGeneratorSection = document.getElementById('agentGeneratorSection');
+      if (agentGeneratorSection) {
+        agentGeneratorSection.style.display = newType === 'AgentDiagram' ? 'block' : 'none';
       }
 
       const oclConstraintsSection = document.getElementById('oclConstraintsSection');

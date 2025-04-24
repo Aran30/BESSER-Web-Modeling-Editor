@@ -91,8 +91,8 @@ class StateUpdate extends Component<Props, State> {
   newFallbackBodyField = createRef<Textfield<string>>();
   newBodyField = createRef<Textfield<string>>();
   private actionTypeRef = createRef<HTMLInputElement>();
-  textReplyRefBody = true;
-  textReplyRefFallbackBody = true;
+  bodyReplyType = "text";
+  fallbackBodyReplyType = "text";
   private toggleColor = () => {
     this.setState((state) => ({
       colorOpen: !state.colorOpen,
@@ -138,9 +138,30 @@ class StateUpdate extends Component<Props, State> {
     const bodies = children.filter(
       (child): child is BotStateMember => child instanceof BotStateBody
     );
+
+    bodies.forEach((body) => {
+      if (body.replyType === "llm") {
+        this.bodyReplyType = "llm"
+      } else if (body.replyType === "code") {
+        this.bodyReplyType = "code"
+      } else {
+        this.bodyReplyType = "text"
+      }
+    });
+
     const fallbackBodies = children.filter(
       (child): child is BotStateMember => child instanceof BotStateFallbackBody
     );
+
+    fallbackBodies.forEach((fallbackBody) => {
+      if (fallbackBody.replyType === "llm") {
+        this.fallbackBodyReplyType = "llm"
+      } else if (fallbackBody.replyType === "code") {
+        this.fallbackBodyReplyType = "code"
+      } else {
+        this.fallbackBodyReplyType = "text"
+      }
+    });
     const bodyRefs: (Textfield<string> | null)[] = [];
     const fallbackBodyRefs: (Textfield<string> | null)[] = [];
 
@@ -172,21 +193,50 @@ class StateUpdate extends Component<Props, State> {
                 type="radio"
                 name="actionType"
                 value="textReply"
-                defaultChecked
+                defaultChecked={this.bodyReplyType === "text"}
                 onChange={() => {
-                  this.textReplyRefBody = true
-                  this.forceUpdate()
+                  this.bodyReplyType = "text";
+                  {bodies.forEach((body) => {
+                    if (body.replyType === "llm" || body.replyType === "code") {
+                      this.delete(body.id)();
+                    }})}
+                  this.forceUpdate();
                 }}
               />
               Text Reply
+            </label>
+           
+            <label>
+              <input
+                type="radio"
+                name="actionType"
+                value="LLM"
+                defaultChecked={this.bodyReplyType === "llm"}
+                onChange={() => {
+                  
+                  this.bodyReplyType = "llm"
+                  {bodies.forEach((body) => {
+                    if (body.replyType === "code" || body.replyType === "text") {
+                      this.delete(body.id)();
+                    }})}
+                  this.create(BotStateBody, "llm")("")
+                  this.forceUpdate()
+                }}
+              />
+              LLM automatic reply
             </label>
             <label>
               <input
                 type="radio"
                 name="actionType"
                 value="pythonCode"
+                defaultChecked={this.bodyReplyType === "code"}
                 onChange={() => {
-                  this.textReplyRefBody = false
+                  this.bodyReplyType = "code"
+                  {bodies.forEach((body) => {
+                    if (body.replyType === "llm" || body.replyType === "text") {
+                      this.delete(body.id)();
+                    }})}
                   this.forceUpdate()
                 }}
               />
@@ -195,7 +245,7 @@ class StateUpdate extends Component<Props, State> {
           </div>
 
           {/* Conditionally render based on the selected radio button */}
-          {this.textReplyRefBody ? (
+          {this.bodyReplyType === "text" ? (
             <>
               {bodies
                 .filter((body) => body.replyType === "text")
@@ -217,6 +267,7 @@ class StateUpdate extends Component<Props, State> {
                     element={body}
                   />
                 ))}
+
               <Textfield
                 ref={this.newBodyField}
                 outline
@@ -250,45 +301,60 @@ class StateUpdate extends Component<Props, State> {
                 }}
               />
             </>
-          ) : (
+          ) : this.bodyReplyType === "code" ? (
             <>
               {bodies.some((body) => body.replyType === "code") ? (
-              <StyledTextArea
-                value={bodies.find((body) => body.replyType === "code")!.name}
-                placeholder="Enter your Python code here..."
-                onChange={(event) => {
-                const body = bodies.find((body) => body.replyType === "code")!;
-                const value = event.target.value;
-                if (value.trim()) {
-                  this.props.update(body.id, { name: value });
-                } else {
-                  this.props.remove(body.id); // Updated to use the renamed method
-                }
-                }}
-                onKeyDown={this.handleKeyDown}
-                autoFocus
-                spellCheck={false}
-              />
+                <StyledTextArea
+                  value={bodies.find((body) => body.replyType === "code")!.name}
+                  
+                  placeholder="Enter your Python code here..."
+                  onChange={(event) => {
+                    const body = bodies.find((body) => body.replyType === "code")!;
+                    const value = event.target.value;
+                    console.log("uyuyu")
+                    if (value.trim()) {
+                      console.log("adding now")
+                      console.log(bodies.find((body) => body.replyType === "code")!.name)
+                      this.props.update(body.id, { name: value });
+                      console.log(value)
+                      console.log(bodies.find((body) => body.replyType === "code")!.name)
+                      console.log("finihsed adding")
+                      
+                    } else {
+                      this.props.remove(body.id); // Updated to use the renamed method
+                      console.log("uaiaia")
+                    }
+                  }}
+                  onKeyDown={this.handleKeyDown}
+                  autoFocus
+                  spellCheck={false}
+                />
               ) : (
-              <StyledTextArea
-                placeholder="Enter your Python code here..."
-                onChange={(event) => {
-                const value = event.target.value;
-                if (value.trim()) {
-                  this.create(BotStateBody, "code")(value);
-                }
-                }}
-                onKeyDown={this.handleKeyDown}
-                autoFocus
-                spellCheck={false}
-              />
+                <StyledTextArea
+                  placeholder="Enter your Python code here..."
+                  onChange={(event) => {
+
+                    const value = event.target.value;
+                    if (value.trim()) {
+                      this.create(BotStateBody, "code")(value); 
+                    }
+                  }}
+                  onKeyDown={this.handleKeyDown}
+                  autoFocus
+                  spellCheck={false}
+                />
               )}
             </>
-
+          ) : (
+            <>
+              <>
+                <p>An automated response will be generated.</p>
+              </>
+            </>
           )}
         </section>
         <section>
-          <Divider />
+          <Divider/>
 
         </section>
         <section>
@@ -299,21 +365,44 @@ class StateUpdate extends Component<Props, State> {
                 type="radio"
                 name="fallbackActionType"
                 value="textReply"
-                defaultChecked
+                defaultChecked={ this.fallbackBodyReplyType === "text"}
                 onChange={() => {
-                  this.textReplyRefFallbackBody = true
+                  this.fallbackBodyReplyType = "text"
+                  {fallbackBodies.forEach((fallbackBody) => {
+                    if (fallbackBody.replyType === "llm") {
+                      this.delete(fallbackBody.id)();
+                    }})}
                   this.forceUpdate()
                 }}
               />
               Text Reply
+            </label>
+            
+            <label>
+              <input
+                type="radio"
+                name="fallbackActionType"
+                value="pythonCode"
+                defaultChecked={ this.fallbackBodyReplyType === "llm"}
+                onChange={() => {
+                  this.fallbackBodyReplyType = "llm"
+                  this.forceUpdate()
+                }}
+              />
+              LLM automatic reply
             </label>
             <label>
               <input
                 type="radio"
                 name="fallbackActionType"
                 value="pythonCode"
+                defaultChecked={ this.fallbackBodyReplyType === "code"}
                 onChange={() => {
-                  this.textReplyRefFallbackBody = false
+                  this.fallbackBodyReplyType = "code"
+                  {fallbackBodies.forEach((fallbackBody) => {
+                    if (fallbackBody.replyType === "llm") {
+                      this.delete(fallbackBody.id)();
+                    }})}
                   this.forceUpdate()
                 }}
               />
@@ -322,7 +411,7 @@ class StateUpdate extends Component<Props, State> {
           </div>
 
           {/* Conditionally render based on the selected radio button */}
-          {this.textReplyRefFallbackBody ? (
+          {this.fallbackBodyReplyType === "text" ? (
             <>
               {fallbackBodies
                 .filter((fallbackBody) => fallbackBody.replyType === "text")
@@ -365,43 +454,43 @@ class StateUpdate extends Component<Props, State> {
                 }}
               />
             </>
-          ) : (
+          ) : this.fallbackBodyReplyType === "code" ? (
             <>
               {fallbackBodies.some((fallbackBody) => fallbackBody.replyType === "code") ? (
-              <StyledTextArea
-                value={fallbackBodies.find((fallbackBody) => fallbackBody.replyType === "code")!.name}
-                placeholder="Enter your Python code here..."
-                onChange={(event) => {
-                const fallbackBody = fallbackBodies.find((fallbackBody) => fallbackBody.replyType === "code")!;
-                const value = event.target.value;
-                if (value.trim()) {
-                  this.props.update(fallbackBody.id, { name: value });
-                } else {
-                  this.props.remove(fallbackBody.id); // Updated to use the renamed method
-                }
-                }}
-                onKeyDown={this.handleKeyDown}
-                autoFocus
-                spellCheck={false}
-              />
+                <StyledTextArea
+                  value={fallbackBodies.find((fallbackBody) => fallbackBody.replyType === "code")!.name}
+                  placeholder="Enter your Python code here..."
+                  onChange={(event) => {
+                    const fallbackBody = fallbackBodies.find((fallbackBody) => fallbackBody.replyType === "code")!;
+                    const value = event.target.value;
+                    if (value.trim()) {
+                      this.props.update(fallbackBody.id, { name: value });
+                    } else {
+                      this.props.remove(fallbackBody.id); // Updated to use the renamed method
+                    }
+                  }}
+                  onKeyDown={this.handleKeyDown}
+                  autoFocus
+                  spellCheck={false}
+                />
               ) : (
-              <StyledTextArea
-                placeholder="Enter your Python code here..."
-                onChange={(event) => {
-                const value = event.target.value;
-                if (value.trim()) {
-                  this.create(BotStateBody, "code")(value);
-                }
-                }}
-                onKeyDown={this.handleKeyDown}
-                autoFocus
-                spellCheck={false}
-              />
+                <StyledTextArea
+                  placeholder="Enter your Python code here..."
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    if (value.trim()) {
+                      this.create(BotStateFallbackBody, "code")(value);
+                    }
+                  }}
+                  onKeyDown={this.handleKeyDown}
+                  autoFocus
+                  spellCheck={false}
+                />
               )}
             </>
 
-          )}
-        
+          ) : (<></>)}
+
         </section>
       </div>
     );

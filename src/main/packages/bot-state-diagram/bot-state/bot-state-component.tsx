@@ -46,6 +46,7 @@ export const BotStateComponent: FunctionComponent<Props> = ({ element, children,
           </Text>
         </svg>
       ) : (
+        <>
         <svg height={40}>
           <Text
             fill={element.textColor}
@@ -54,9 +55,20 @@ export const BotStateComponent: FunctionComponent<Props> = ({ element, children,
           >
             {element.name}
           </Text>
+
         </svg>
+        <image
+          href="images/agentheaddark.png"
+          x={element.bounds.width - 35}
+          y={2}
+          width="35"
+          height="35"
+        />
+        </>
       )}
+      
       {children}
+     
       <ThemedRect 
         width="100%" 
         height="100%" 
@@ -67,6 +79,18 @@ export const BotStateComponent: FunctionComponent<Props> = ({ element, children,
       />
       {element.hasBody && (
         <ThemedPath d={`M 0 ${element.headerHeight} H ${element.bounds.width}`} strokeColor={element.strokeColor} />
+      )}
+      {element.hasBody && (
+         <svg
+         xmlns="http://www.w3.org/2000/svg"
+         width="40"
+         height="40"
+         viewBox="0 0 16 16"
+         x="70%"
+         y="40"
+       >
+      
+       </svg>
       )}
       {element.hasFallbackBody && (
         <ThemedPath d={`M 0 ${element.deviderPosition} H ${element.bounds.width}`} strokeColor={element.strokeColor} />

@@ -17,7 +17,7 @@ export const PopoverContainer = styled.div<Props>`
   letter-spacing: normal;
   line-break: auto;
   line-height: 1.5;
-  max-width: 276px;
+
   position: absolute;
   text-align: left;
   text-align: start;

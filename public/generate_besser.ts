@@ -41,7 +41,7 @@ export async function exportBuml(editorInstance: any) {
     const filename = editorInstance.model.type === 'StateMachineDiagram' 
       ? 'state_machine.py' 
       : editorInstance.model.type === 'AgentDiagram' 
-      ? 'agent.py' 
+      ? 'agent.zip' 
       : 'domain_model.py';
     
     a.download = filename;
@@ -121,6 +121,9 @@ export async function generateOutput(generatorType: string) {
           break;
         case 'java':
           filename = 'java_output.zip';
+          break;
+        case 'agent':
+          filename = 'agent.zip';
           break;
         default:
           filename = 'default.py';
@@ -212,6 +215,14 @@ function setupGenerateButton() {
   if (convertButton && importBumlFile) {
     convertButton.addEventListener('click', () => {
       (importBumlFile as HTMLInputElement).click();
+    });
+  }
+
+// generate agent button, does it make sense to separate this from the other generators?
+  const generateAgentButton = document.getElementById('generateAgentButton');
+  if (generateAgentButton) {
+    generateAgentButton.addEventListener('click', () => {
+      generateOutput('agent');
     });
   }
 }

@@ -68,7 +68,7 @@ export class Intent extends UMLContainer implements IUMLState {
         Math.max(
           current,
           Math.round(
-            (Text.size(layer, child.name, index === 0 ? { fontWeight: 'bold' } : undefined).width + 20) / radix,
+            (Text.size(layer, child.name, index === 0 ? { fontWeight: 'bold' } : undefined).width + 110) / radix,
           ) * radix,
         ),
       Math.round(this.bounds.width / radix) * radix,

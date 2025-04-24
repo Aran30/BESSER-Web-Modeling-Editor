@@ -12,8 +12,8 @@ export const IntentMemberComponent: FunctionComponent<Props> = ({ element, fillC
   return (
     <g>
         
-      <ThemedRect fillColor={fillColor || element.fillColor} strokeColor="none" width="100%" height="100%" />
-      <Text x={10} fill={element.textColor} fontWeight="normal" textAnchor="start">
+      <ThemedRect fillColor='none' strokeColor="none" width="100%" height="100%"  />
+      <Text x={10} fill='black' fontWeight="normal" textAnchor="start">
         {element.name}
       </Text>
     </g>

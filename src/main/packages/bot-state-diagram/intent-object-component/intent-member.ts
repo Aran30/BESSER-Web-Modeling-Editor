@@ -27,7 +27,7 @@ export abstract class IntentMember extends UMLElement {
   }
 
   render(layer: ILayer): ILayoutable[] {
-    const radix = 10;
+    const radix = 30;
     const width = Text.size(layer, this.name).width + 20;
     this.bounds.width = Math.max(this.bounds.width, Math.round(width / radix) * radix);
     return [this];
