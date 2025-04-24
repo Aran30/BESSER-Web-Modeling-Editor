@@ -41,9 +41,9 @@ import { UMLStateTransitionUpdate } from './uml-state-diagram/uml-state-transiti
 import { UMLStateCodeBlockUpdate } from './uml-state-diagram/uml-state-code-block/uml-state-code-block-update';
 import { UMLStateUpdate } from './uml-state-diagram/uml-state/uml-state-update';
 
-import { IntentBodyUpdate } from './bot-state-diagram/intent-object-component/intent-update';
-import { ReplyBodyUpdate } from './bot-state-diagram/reply-component/reply-update';
-import { BotStateUpdate } from './bot-state-diagram/bot-state/bot-state-update';
+import { IntentBodyUpdate } from './agent-state-diagram/intent-object-component/intent-update';
+import { ReplyBodyUpdate } from './agent-state-diagram/reply-component/reply-update';
+import { AgentStateUpdate } from './agent-state-diagram/agent-state/agent-state-update';
 
 export type Popups = { [key in UMLElementType | UMLRelationshipType]: ComponentType<{ element: any }> | null };
 export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentType<{ element: any }> | null } = {
@@ -118,10 +118,10 @@ export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentT
   [UMLElementType.IntentBody]: null,
   [UMLElementType.Reply]: ReplyBodyUpdate,
   [UMLElementType.ReplyBody]: null,
-  [UMLElementType.BotState]: BotStateUpdate,
-  [UMLElementType.BotStateBody]: null,
-  [UMLElementType.BotStateFallbackBody]: null,
-  // [UMLElementType.BotStateBody]: null,
+  [UMLElementType.AgentState]: AgentStateUpdate,
+  [UMLElementType.AgentStateBody]: null,
+  [UMLElementType.AgentStateFallbackBody]: null,
+  // [UMLElementType.AgentStateBody]: null,
   // Relationships
   [UMLRelationshipType.ClassAggregation]: UMLClassAssociationUpdate,
   [UMLRelationshipType.ClassBidirectional]: UMLClassAssociationUpdate,

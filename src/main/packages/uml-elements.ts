@@ -66,11 +66,13 @@ import { UMLStateMergeNode } from './uml-state-diagram/uml-state-merge-node/uml-
 import { UMLStateObjectNode } from './uml-state-diagram/uml-state-object-node/uml-state-object-node';
 import { UMLStateCodeBlock } from './uml-state-diagram/uml-state-code-block/uml-state-code-block';
 
-import { Intent } from './bot-state-diagram/intent-object-component/intent';
-import { IntentBody } from './bot-state-diagram/intent-body/intent-body';
-import { BotState } from './bot-state-diagram/bot-state/bot-state';
-import { BotStateBody } from './bot-state-diagram/bot-state-body/bot-state-body';
-import { BotStateFallbackBody } from './bot-state-diagram/bot-state-fallback-body/bot-state-fallback-body';
+import { Intent } from './agent-state-diagram/intent-object-component/intent';
+import { IntentBody } from './agent-state-diagram/intent-body/intent-body';
+import { Reply } from './agent-state-diagram/reply-component/reply';
+import { ReplyBody } from './agent-state-diagram/reply-body/reply-body';
+import { AgentState } from './agent-state-diagram/agent-state/agent-state';
+import { AgentStateBody } from './agent-state-diagram/agent-state-body/agent-state-body';
+import { AgentStateFallbackBody } from './agent-state-diagram/agent-state-fallback-body/agent-state-fallback-body';
 
 
 export const UMLElements = {
@@ -142,7 +144,9 @@ export const UMLElements = {
   [UMLElementType.StateCodeBlock]: UMLStateCodeBlock,
   [UMLElementType.Intent]: Intent,
   [UMLElementType.IntentBody]: IntentBody,
-  [UMLElementType.BotState]: BotState,
-  [UMLElementType.BotStateBody]: BotStateBody,
-  [UMLElementType.BotStateFallbackBody]: BotStateFallbackBody,
+  [UMLElementType.Reply]: Reply,
+  [UMLElementType.ReplyBody]: ReplyBody,
+  [UMLElementType.AgentState]: AgentState,
+  [UMLElementType.AgentStateBody]: AgentStateBody,
+  [UMLElementType.AgentStateFallbackBody]: AgentStateFallbackBody,
 };

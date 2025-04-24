@@ -13,7 +13,7 @@ import { ColorLegendElementType } from './common/color-legend';
 import { ReachabilityGraphElementType } from './uml-reachability-graph';
 import { BPMNElementType } from './bpmn';
 import { StateElementType } from './uml-state-diagram';
-import { AgentElementType } from './bot-state-diagram';
+import { AgentElementType } from './agent-state-diagram';
 
 export type UMLElementType =
   | keyof typeof ClassElementType

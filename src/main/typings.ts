@@ -104,7 +104,7 @@ export interface UMLState extends UMLElement {
   fallbackBodies: string[];
 }
 
-export interface BotState extends UMLElement {
+export interface AgentState extends UMLElement {
   type: UMLElementType;
   bodies: string[];
   fallbackBodies: string[];

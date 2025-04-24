@@ -1,4 +1,4 @@
-import { BotState } from "./bot-state/bot-state";
+import { AgentState } from "./agent-state/agent-state";
 import { Intent } from "./intent-object-component/intent";
 
 export const AgentElementType = {
@@ -17,9 +17,9 @@ export const AgentElementType = {
   Intent: 'Intent',
   ReplyBody: 'ReplyBody',
   Reply: 'Reply',
-  BotState: 'BotState',
-  BotStateBody: 'BotStateBody',
-  BotStateFallbackBody: 'BotStateFallbackBody',
+  AgentState: 'AgentState',
+  AgentStateBody: 'AgentStateBody',
+  AgentStateFallbackBody: 'AgentStateFallbackBody',
 } as const;
 
 export const AgentRelationshipType = {

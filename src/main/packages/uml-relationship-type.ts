@@ -13,7 +13,7 @@ import { FlowchartRelationshipType } from './flowchart';
 import { BPMNRelationshipType } from './bpmn';
 import { StateRelationshipType } from './uml-state-diagram';
 
-import { AgentRelationshipType } from './bot-state-diagram';
+import { AgentRelationshipType } from './agent-state-diagram';
 
 export type UMLRelationshipType =
   | keyof typeof ClassRelationshipType

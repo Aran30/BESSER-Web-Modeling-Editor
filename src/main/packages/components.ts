@@ -76,11 +76,13 @@ import { UMLStateTransitionComponent } from './uml-state-diagram/uml-state-trans
 import { UMLStateCodeBlockComponent } from './uml-state-diagram/uml-state-code-block/uml-state-code-block-component';
 import { UMLStateMemberComponent } from './uml-state-diagram/uml-state/uml-state-member-component';
 
-import { IntentComponent } from './bot-state-diagram/intent-object-component/intent-object-component';
-import { IntentMemberComponent } from './bot-state-diagram/intent-object-component/intent-member-component';
+import { IntentComponent } from './agent-state-diagram/intent-object-component/intent-object-component';
+import { IntentMemberComponent } from './agent-state-diagram/intent-object-component/intent-member-component';
+import { ReplyComponent } from './agent-state-diagram/reply-component/reply-object-component';
+import { ReplyMemberComponent } from './agent-state-diagram/reply-component/reply-member-component';
 
-import { BotStateComponent } from './bot-state-diagram/bot-state/bot-state-component';
-import { BotStateMemberComponent } from './bot-state-diagram/bot-state/bot-state-member-component';
+import { AgentStateComponent } from './agent-state-diagram/agent-state/agent-state-component';
+import { AgentStateMemberComponent } from './agent-state-diagram/agent-state/agent-state-member-component';
 
 
 export const Components: {
@@ -185,7 +187,9 @@ export const Components: {
 
   [UMLElementType.Intent]: IntentComponent,
   [UMLElementType.IntentBody]: IntentMemberComponent,
-  [UMLElementType.BotState]: BotStateComponent,
-  [UMLElementType.BotStateBody]: BotStateMemberComponent,
-  [UMLElementType.BotStateFallbackBody]: BotStateMemberComponent,
+  [UMLElementType.Reply]: ReplyComponent,
+  [UMLElementType.ReplyBody]: ReplyMemberComponent,
+  [UMLElementType.AgentState]: AgentStateComponent,
+  [UMLElementType.AgentStateBody]: AgentStateMemberComponent,
+  [UMLElementType.AgentStateFallbackBody]: AgentStateMemberComponent,
 };

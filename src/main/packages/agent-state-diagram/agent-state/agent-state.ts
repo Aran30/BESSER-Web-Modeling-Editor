@@ -9,8 +9,8 @@ import * as Apollon from '../../../typings';
 import { assign } from '../../../utils/fx/assign';
 import { Text } from '../../../utils/svg/text';
 import { UMLElementType } from '../../uml-element-type';
-import { BotStateBody } from '../bot-state-body/bot-state-body';
-import { BotStateFallbackBody } from '../bot-state-fallback-body/bot-state-fallback-body';
+import { AgentStateBody } from '../agent-state-body/agent-state-body';
+import { AgentStateFallbackBody } from '../agent-state-fallback-body/agent-state-fallback-body';
 
 export interface IUMLState extends IUMLContainer {
   italic: boolean;
@@ -21,7 +21,7 @@ export interface IUMLState extends IUMLContainer {
   hasFallbackBody: boolean;
 }
 
-export class BotState extends UMLContainer implements IUMLState {
+export class AgentState extends UMLContainer implements IUMLState {
   static features: UMLElementFeatures = {
     ...UMLContainer.features,
     droppable: false,
@@ -30,7 +30,7 @@ export class BotState extends UMLContainer implements IUMLState {
   static stereotypeHeaderHeight = 50;
   static nonStereotypeHeaderHeight = 40;
 
-  type: UMLElementType = AgentElementType.BotState;
+  type: UMLElementType = AgentElementType.AgentState;
   italic: boolean = false;
   underline: boolean = false;
   stereotype: string | null = null;
@@ -39,7 +39,7 @@ export class BotState extends UMLContainer implements IUMLState {
   hasFallbackBody: boolean = false;
 
   get headerHeight() {
-    return this.stereotype ? BotState.stereotypeHeaderHeight : BotState.nonStereotypeHeaderHeight;
+    return this.stereotype ? AgentState.stereotypeHeaderHeight : AgentState.nonStereotypeHeaderHeight;
   }
 
   constructor(values?: DeepPartial<IUMLState>) {
@@ -48,8 +48,8 @@ export class BotState extends UMLContainer implements IUMLState {
   }
 
   reorderChildren(children: IUMLElement[]): string[] {
-    const bodies = children.filter((x): x is BotStateBody => x.type === AgentElementType.BotStateBody);
-    const fallbackBodies = children.filter((x): x is BotStateFallbackBody => x.type === AgentElementType.BotStateFallbackBody);
+    const bodies = children.filter((x): x is AgentStateBody => x.type === AgentElementType.AgentStateBody);
+    const fallbackBodies = children.filter((x): x is AgentStateFallbackBody => x.type === AgentElementType.AgentStateFallbackBody);
     return [...bodies.map((element) => element.id), ...fallbackBodies.map((element) => element.id)];
   }
 
@@ -57,14 +57,14 @@ export class BotState extends UMLContainer implements IUMLState {
     return {
       ...super.serialize(children),
       type: this.type as UMLElementType,
-      bodies: children.filter((x) => x instanceof BotStateBody).map((x) => x.id),
-      fallbackBodies: children.filter((x) => x instanceof BotStateFallbackBody).map((x) => x.id),
+      bodies: children.filter((x) => x instanceof AgentStateBody).map((x) => x.id),
+      fallbackBodies: children.filter((x) => x instanceof AgentStateFallbackBody).map((x) => x.id),
     };
   }
 
   render(layer: ILayer, children: ILayoutable[] = []): ILayoutable[] {
-    const bodies = children.filter((x): x is BotStateBody => x instanceof BotStateBody);
-    const fallbackBodies = children.filter((x): x is BotStateFallbackBody => x instanceof BotStateFallbackBody);
+    const bodies = children.filter((x): x is AgentStateBody => x instanceof AgentStateBody);
+    const fallbackBodies = children.filter((x): x is AgentStateFallbackBody => x instanceof AgentStateFallbackBody);
 
     this.hasBody = bodies.length > 0;
     this.hasFallbackBody = fallbackBodies.length > 0;

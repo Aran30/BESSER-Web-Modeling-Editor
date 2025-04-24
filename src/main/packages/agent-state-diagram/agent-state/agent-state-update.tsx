@@ -17,13 +17,13 @@ import { UMLElementRepository } from '../../../services/uml-element/uml-element-
 import { AsyncDispatch } from '../../../utils/actions/actions';
 import { notEmpty } from '../../../utils/not-empty';
 import { AgentElementType } from '..';
-import { BotStateBody } from '../bot-state-body/bot-state-body';
-import { BotStateFallbackBody } from '../bot-state-fallback-body/bot-state-fallback-body';
+import { AgentStateBody } from '../agent-state-body/agent-state-body';
+import { AgentStateFallbackBody } from '../agent-state-fallback-body/agent-state-fallback-body';
 import { UMLElementType } from '../../uml-element-type';
 import { UMLElements } from '../../uml-elements';
-import { BotState } from './bot-state';
-import BotBodyUpdate from '../bot-state-body/bot-state-body-update';
-import { BotStateMember } from '../bot-state/bot-state-member';
+import { AgentState } from './agent-state';
+import BotBodyUpdate from '../agent-state-body/agent-state-body-update';
+import { AgentStateMember } from '../agent-state/agent-state-member';
 
 const Flex = styled.div`
   display: flex;
@@ -36,10 +36,8 @@ const StyledTextArea = styled.textarea`
   border: 1px solid ${(props) => props.theme.color.gray};
   border-radius: 4px;
   width: 100%;
-  max-width: 100%;
   min-height: 150px;
   font-family: monospace;
-  resize: vertical;
   white-space: pre;
   tab-size: 4;
   box-sizing: border-box;
@@ -53,7 +51,7 @@ const StyledTextArea = styled.textarea`
 
 
 interface OwnProps {
-  element: BotState;
+  element: AgentState;
 }
 
 type StateProps = {};
@@ -107,37 +105,42 @@ class StateUpdate extends Component<Props, State> {
   }
 
 
-  private handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Allow tab key to insert a tab character instead of changing focus
-    if (event.key === 'Tab') {
-      event.preventDefault();
+ private handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>, bodyId: string) => {
+  // Allow tab key to insert a tab character instead of changing focus
+  if (event.key === 'Tab') {
+    event.preventDefault();
 
-      const target = event.target as HTMLTextAreaElement;
-      const start = target.selectionStart;
-      const end = target.selectionEnd;
+    const target = event.target as HTMLTextAreaElement;
+    const start = target.selectionStart;
+    const end = target.selectionEnd;
 
-      const value = target.value;
-      const newValue = value.substring(0, start) + '\t' + value.substring(end);
+    const value = target.value;
+    const newValue = value.substring(0, start) + '\t' + value.substring(end);
 
-      // Update the value directly
-      target.value = newValue;
+    // Update the value directly in the textarea
+    target.value = newValue;
 
-      // Update the cursor position
-      setTimeout(() => {
-        target.selectionStart = target.selectionEnd = start + 1;
-      }, 0);
+    // Update the cursor position
+    setTimeout(() => {
+      target.selectionStart = target.selectionEnd = start + 1;
+    }, 0);
 
+    // Propagate the change to the backend
+    this.props.update(bodyId, { name: newValue });
+  }
+};
 
-    }
-  };
-
+  
 
   render() {
     const { element, getById } = this.props;
     const children = element.ownedElements.map((id) => getById(id)).filter(notEmpty);
     const bodies = children.filter(
-      (child): child is BotStateMember => child instanceof BotStateBody
+      (child): child is AgentStateMember => child instanceof AgentStateBody
     );
+    const preserveTabs = (str: string): string => {
+      return str.replace(/\t/g, '    ');
+    };
 
     bodies.forEach((body) => {
       if (body.replyType === "llm") {
@@ -150,7 +153,7 @@ class StateUpdate extends Component<Props, State> {
     });
 
     const fallbackBodies = children.filter(
-      (child): child is BotStateMember => child instanceof BotStateFallbackBody
+      (child): child is AgentStateMember => child instanceof AgentStateFallbackBody
     );
 
     fallbackBodies.forEach((fallbackBody) => {
@@ -219,7 +222,7 @@ class StateUpdate extends Component<Props, State> {
                     if (body.replyType === "code" || body.replyType === "text") {
                       this.delete(body.id)();
                     }})}
-                  this.create(BotStateBody, "llm")("")
+                  this.create(AgentStateBody, "llm")("")
                   this.forceUpdate()
                 }}
               />
@@ -272,7 +275,7 @@ class StateUpdate extends Component<Props, State> {
                 ref={this.newBodyField}
                 outline
                 value=""
-                onSubmit={this.create(BotStateBody, "text")}
+                onSubmit={this.create(AgentStateBody, "text")}
                 onSubmitKeyUp={(key: string, value: string) => {
                   if (value) {
                     this.setState({
@@ -311,21 +314,16 @@ class StateUpdate extends Component<Props, State> {
                   onChange={(event) => {
                     const body = bodies.find((body) => body.replyType === "code")!;
                     const value = event.target.value;
-                    console.log("uyuyu")
                     if (value.trim()) {
-                      console.log("adding now")
-                      console.log(bodies.find((body) => body.replyType === "code")!.name)
-                      this.props.update(body.id, { name: value });
-                      console.log(value)
-                      console.log(bodies.find((body) => body.replyType === "code")!.name)
-                      console.log("finihsed adding")
-                      
+                      this.props.update(body.id, { name: value });                
                     } else {
                       this.props.remove(body.id); // Updated to use the renamed method
                       console.log("uaiaia")
                     }
                   }}
-                  onKeyDown={this.handleKeyDown}
+                  onKeyDown={(event) =>
+                    this.handleKeyDown(event, bodies.find((body) => body.replyType === "code")!.id)
+                  }
                   autoFocus
                   spellCheck={false}
                 />
@@ -336,10 +334,12 @@ class StateUpdate extends Component<Props, State> {
 
                     const value = event.target.value;
                     if (value.trim()) {
-                      this.create(BotStateBody, "code")(value); 
+                      this.create(AgentStateBody, "code")(value); 
                     }
                   }}
-                  onKeyDown={this.handleKeyDown}
+                  onKeyDown={(event) =>
+                    this.handleKeyDown(event, bodies.find((body) => body.replyType === "code")!.id)
+                  }
                   autoFocus
                   spellCheck={false}
                 />
@@ -437,7 +437,7 @@ class StateUpdate extends Component<Props, State> {
                 ref={this.newFallbackBodyField}
                 outline
                 value=""
-                onSubmit={this.create(BotStateFallbackBody, "text")}
+                onSubmit={this.create(AgentStateFallbackBody, "text")}
                 onSubmitKeyUp={() =>
                   this.setState({
                     fieldToFocus: this.newFallbackBodyField.current,
@@ -469,7 +469,9 @@ class StateUpdate extends Component<Props, State> {
                       this.props.remove(fallbackBody.id); // Updated to use the renamed method
                     }
                   }}
-                  onKeyDown={this.handleKeyDown}
+                  onKeyDown={(event) =>
+                    this.handleKeyDown(event, bodies.find((body) => body.replyType === "code")!.id)
+                  }
                   autoFocus
                   spellCheck={false}
                 />
@@ -479,10 +481,12 @@ class StateUpdate extends Component<Props, State> {
                   onChange={(event) => {
                     const value = event.target.value;
                     if (value.trim()) {
-                      this.create(BotStateFallbackBody, "code")(value);
+                      this.create(AgentStateFallbackBody, "code")(value);
                     }
                   }}
-                  onKeyDown={this.handleKeyDown}
+                  onKeyDown={(event) =>
+                    this.handleKeyDown(event, bodies.find((body) => body.replyType === "code")!.id)
+                  }
                   autoFocus
                   spellCheck={false}
                 />
@@ -496,7 +500,7 @@ class StateUpdate extends Component<Props, State> {
     );
   }
 
-  private create = (Clazz: typeof BotStateBody | typeof BotStateFallbackBody, replyType: string) => (value: string) => {
+  private create = (Clazz: typeof AgentStateBody | typeof AgentStateFallbackBody, replyType: string) => (value: string) => {
     const { element, create } = this.props;
     const member = new Clazz();
     member.name = value;
@@ -513,4 +517,4 @@ class StateUpdate extends Component<Props, State> {
   };
 }
 
-export const BotStateUpdate = enhance(StateUpdate);
+export const AgentStateUpdate = enhance(StateUpdate);

@@ -8,7 +8,7 @@ import { IBoundary, computeDimension } from '../../../utils/geometry/boundary';
 import { Text } from '../../../utils/svg/text';
 import * as Apollon from '../../../typings';
 
-export abstract class BotStateMember extends UMLElement {
+export abstract class AgentStateMember extends UMLElement {
   static features: UMLElementFeatures = {
     ...UMLElement.features,
     hoverable: false,

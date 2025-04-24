@@ -31,7 +31,7 @@ import { Separator } from './create-pane-styles';
 import { composeBPMNPreview } from '../../packages/bpmn/bpmn-diagram-preview';
 import { composeStatePreview } from '../../packages/uml-state-diagram/state-preview';
 
-import { composeBotPreview } from '../../packages/bot-state-diagram/bot-state-preview';
+import { composeBotPreview } from '../../packages/agent-state-diagram/agent-state-preview';
 
 type OwnProps = {};
 
