@@ -33,9 +33,7 @@ export const PopoverContainer = styled.div<Props>`
 
   *,
   *:before,
-  *:after {
-    box-sizing: inherit;
-  }
+
 
   ${(props) => {
     let x = `${props.position.x}px`;
@@ -73,7 +71,6 @@ export const PopoverBody = styled.div<Pick<Props, 'maxHeight'>>`
   ${(props) =>
     props.maxHeight &&
     css`
-      max-height: ${props.maxHeight}px;
       overflow: auto;
     `}
 `;
