@@ -83,7 +83,7 @@ import { ReplyMemberComponent } from './agent-state-diagram/reply-component/repl
 
 import { AgentStateComponent } from './agent-state-diagram/agent-state/agent-state-component';
 import { AgentStateMemberComponent } from './agent-state-diagram/agent-state/agent-state-member-component';
-
+import { AgentStateTransitionComponent } from './agent-state-diagram/agent-state-transition/agent-state-transition-component';
 
 export const Components: {
   [key in UMLElementType | UMLRelationshipType]:
@@ -192,4 +192,5 @@ export const Components: {
   [UMLElementType.AgentState]: AgentStateComponent,
   [UMLElementType.AgentStateBody]: AgentStateMemberComponent,
   [UMLElementType.AgentStateFallbackBody]: AgentStateMemberComponent,
+  [UMLRelationshipType.AgentStateTransition]: AgentStateTransitionComponent,
 };

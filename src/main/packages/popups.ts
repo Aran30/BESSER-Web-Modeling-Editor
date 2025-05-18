@@ -44,6 +44,7 @@ import { UMLStateUpdate } from './uml-state-diagram/uml-state/uml-state-update';
 import { IntentBodyUpdate } from './agent-state-diagram/intent-object-component/intent-update';
 import { ReplyBodyUpdate } from './agent-state-diagram/reply-component/reply-update';
 import { AgentStateUpdate } from './agent-state-diagram/agent-state/agent-state-update';
+import { AgentStateTransitionUpdate } from './agent-state-diagram/agent-state-transition/agent-state-transition-update';
 
 export type Popups = { [key in UMLElementType | UMLRelationshipType]: ComponentType<{ element: any }> | null };
 export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentType<{ element: any }> | null } = {
@@ -151,4 +152,5 @@ export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentT
   [UMLRelationshipType.FlowchartFlowline]: FlowchartFlowlineUpdate,
   [UMLRelationshipType.BPMNFlow]: BPMNFlowUpdate,
   [UMLRelationshipType.StateTransition]: UMLStateTransitionUpdate,
+  [UMLRelationshipType.AgentStateTransition]: AgentStateTransitionUpdate,
 };

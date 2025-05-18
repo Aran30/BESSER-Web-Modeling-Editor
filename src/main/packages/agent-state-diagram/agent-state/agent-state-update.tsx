@@ -24,6 +24,14 @@ import { UMLElements } from '../../uml-elements';
 import { AgentState } from './agent-state';
 import BotBodyUpdate from '../agent-state-body/agent-state-body-update';
 import { AgentStateMember } from '../agent-state/agent-state-member';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+import { Controlled as CodeMirror } from 'react-codemirror2';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/mode/python/python';
+
 
 const Flex = styled.div`
   display: flex;
@@ -49,6 +57,20 @@ const StyledTextArea = styled.textarea`
   }
 `;
 
+const ResizableCodeMirrorWrapper = styled.div`
+  resize: both;
+  overflow: auto; /* Ensure content doesn't overflow */
+  min-height: 150px; /* Set a minimum height */
+  border: 1px solid ${(props) => props.theme.color.gray};
+  border-radius: 4px;
+  padding: 8px;
+  box-sizing: border-box;
+
+  .CodeMirror {
+    height: 100% !important; /* Ensure CodeMirror fills the wrapper */
+    width: 100%;
+  }
+`;
 
 interface OwnProps {
   element: AgentState;
@@ -105,32 +127,32 @@ class StateUpdate extends Component<Props, State> {
   }
 
 
- private handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>, bodyId: string) => {
-  // Allow tab key to insert a tab character instead of changing focus
-  if (event.key === 'Tab') {
-    event.preventDefault();
+  private handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>, bodyId: string) => {
+    // Allow tab key to insert a tab character instead of changing focus
+    if (event.key === 'Tab') {
+      event.preventDefault();
 
-    const target = event.target as HTMLTextAreaElement;
-    const start = target.selectionStart;
-    const end = target.selectionEnd;
+      const target = event.target as HTMLTextAreaElement;
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
 
-    const value = target.value;
-    const newValue = value.substring(0, start) + '\t' + value.substring(end);
+      const value = target.value;
+      const newValue = value.substring(0, start) + '\t' + value.substring(end);
 
-    // Update the value directly in the textarea
-    target.value = newValue;
+      // Update the value directly in the textarea
+      target.value = newValue;
 
-    // Update the cursor position
-    setTimeout(() => {
-      target.selectionStart = target.selectionEnd = start + 1;
-    }, 0);
+      // Update the cursor position
+      setTimeout(() => {
+        target.selectionStart = target.selectionEnd = start + 1;
+      }, 0);
 
-    // Propagate the change to the backend
-    this.props.update(bodyId, { name: newValue });
-  }
-};
+      // Propagate the change to the backend
+      this.props.update(bodyId, { name: newValue });
+    }
+  };
 
-  
+
 
   render() {
     const { element, getById } = this.props;
@@ -199,16 +221,19 @@ class StateUpdate extends Component<Props, State> {
                 defaultChecked={this.bodyReplyType === "text"}
                 onChange={() => {
                   this.bodyReplyType = "text";
-                  {bodies.forEach((body) => {
-                    if (body.replyType === "llm" || body.replyType === "code") {
-                      this.delete(body.id)();
-                    }})}
+                  {
+                    bodies.forEach((body) => {
+                      if (body.replyType === "llm" || body.replyType === "code") {
+                        this.delete(body.id)();
+                      }
+                    })
+                  }
                   this.forceUpdate();
                 }}
               />
               Text Reply
             </label>
-           
+
             <label>
               <input
                 type="radio"
@@ -216,13 +241,16 @@ class StateUpdate extends Component<Props, State> {
                 value="LLM"
                 defaultChecked={this.bodyReplyType === "llm"}
                 onChange={() => {
-                  
+
                   this.bodyReplyType = "llm"
-                  {bodies.forEach((body) => {
-                    if (body.replyType === "code" || body.replyType === "text") {
-                      this.delete(body.id)();
-                    }})}
-                  this.create(AgentStateBody, "llm")("")
+                  {
+                    bodies.forEach((body) => {
+                      if (body.replyType === "code" || body.replyType === "text") {
+                        this.delete(body.id)();
+                      }
+                    })
+                  }
+                  this.create(AgentStateBody, "llm")("AI response 🪄")
                   this.forceUpdate()
                 }}
               />
@@ -236,10 +264,14 @@ class StateUpdate extends Component<Props, State> {
                 defaultChecked={this.bodyReplyType === "code"}
                 onChange={() => {
                   this.bodyReplyType = "code"
-                  {bodies.forEach((body) => {
-                    if (body.replyType === "llm" || body.replyType === "text") {
-                      this.delete(body.id)();
-                    }})}
+                  {
+                    bodies.forEach((body) => {
+                      if (body.replyType === "llm" || body.replyType === "text") {
+                        this.delete(body.id)();
+                      }
+                    })
+                  }
+                  this.create(AgentStateBody, "code")("def action_name(session: SessionAgent):\n")
                   this.forceUpdate()
                 }}
               />
@@ -306,44 +338,33 @@ class StateUpdate extends Component<Props, State> {
             </>
           ) : this.bodyReplyType === "code" ? (
             <>
-              {bodies.some((body) => body.replyType === "code") ? (
-                <StyledTextArea
-                  value={bodies.find((body) => body.replyType === "code")!.name}
-                  
-                  placeholder="Enter your Python code here..."
-                  onChange={(event) => {
-                    const body = bodies.find((body) => body.replyType === "code")!;
-                    const value = event.target.value;
-                    if (value.trim()) {
-                      this.props.update(body.id, { name: value });                
-                    } else {
-                      this.props.remove(body.id); // Updated to use the renamed method
-                      console.log("uaiaia")
-                    }
-                  }}
-                  onKeyDown={(event) =>
-                    this.handleKeyDown(event, bodies.find((body) => body.replyType === "code")!.id)
-                  }
-                  autoFocus
-                  spellCheck={false}
-                />
-              ) : (
-                <StyledTextArea
-                  placeholder="Enter your Python code here..."
-                  onChange={(event) => {
 
-                    const value = event.target.value;
+              <ResizableCodeMirrorWrapper>
+                <CodeMirror
+                  value={bodies.find((body) => body.replyType === "code")!.name}
+                  options={{
+                    mode: 'python', // Enable Python syntax highlighting
+                    theme: 'material', // Use the Material theme
+                    lineNumbers: true, // Show line numbers
+                    tabSize: 4,
+                    indentWithTabs: true,
+                  }}
+                  onBeforeChange={(editor, data, value) => {
+                    const body = bodies.find((body) => body.replyType === "code")!;
+                    this.props.update(body.id, { name: value }); // Update the backend with the new value
+                  }}
+                  onChange={(editor, data, value) => {
+                    console.log('Code updated:', value); // Optional: Log changes
+                    const body = bodies.find((body) => body.replyType === "code")!;
                     if (value.trim()) {
-                      this.create(AgentStateBody, "code")(value); 
+                      this.props.update(body.id, { name: value });
+                    } else {
+
                     }
                   }}
-                  onKeyDown={(event) =>
-                    this.handleKeyDown(event, bodies.find((body) => body.replyType === "code")!.id)
-                  }
-                  autoFocus
-                  spellCheck={false}
                 />
-              )}
+              </ResizableCodeMirrorWrapper>
+
             </>
           ) : (
             <>
@@ -354,7 +375,7 @@ class StateUpdate extends Component<Props, State> {
           )}
         </section>
         <section>
-          <Divider/>
+          <Divider />
 
         </section>
         <section>
@@ -365,27 +386,38 @@ class StateUpdate extends Component<Props, State> {
                 type="radio"
                 name="fallbackActionType"
                 value="textReply"
-                defaultChecked={ this.fallbackBodyReplyType === "text"}
+                defaultChecked={this.fallbackBodyReplyType === "text"}
                 onChange={() => {
                   this.fallbackBodyReplyType = "text"
-                  {fallbackBodies.forEach((fallbackBody) => {
-                    if (fallbackBody.replyType === "llm") {
-                      this.delete(fallbackBody.id)();
-                    }})}
+                  {
+                    fallbackBodies.forEach((fallbackBody) => {
+                      if (fallbackBody.replyType === "llm") {
+                        this.delete(fallbackBody.id)();
+                      }
+                    })
+                  }
                   this.forceUpdate()
                 }}
               />
               Text Reply
             </label>
-            
+
             <label>
               <input
                 type="radio"
                 name="fallbackActionType"
                 value="pythonCode"
-                defaultChecked={ this.fallbackBodyReplyType === "llm"}
+                defaultChecked={this.fallbackBodyReplyType === "llm"}
                 onChange={() => {
                   this.fallbackBodyReplyType = "llm"
+                  {
+                    fallbackBodies.forEach((body) => {
+                      if (body.replyType === "code" || body.replyType === "text") {
+                        this.delete(body.id)();
+                      }
+                    })
+                  }
+                  this.create(AgentStateFallbackBody, "llm")("AI response 🪄")
                   this.forceUpdate()
                 }}
               />
@@ -396,13 +428,17 @@ class StateUpdate extends Component<Props, State> {
                 type="radio"
                 name="fallbackActionType"
                 value="pythonCode"
-                defaultChecked={ this.fallbackBodyReplyType === "code"}
+                defaultChecked={this.fallbackBodyReplyType === "code"}
                 onChange={() => {
                   this.fallbackBodyReplyType = "code"
-                  {fallbackBodies.forEach((fallbackBody) => {
-                    if (fallbackBody.replyType === "llm") {
-                      this.delete(fallbackBody.id)();
-                    }})}
+                  {
+                    fallbackBodies.forEach((fallbackBody) => {
+                      if (fallbackBody.replyType === "llm" || fallbackBody.replyType === "text") {
+                        this.delete(fallbackBody.id)();
+                      }
+                    })
+                  }
+                  this.create(AgentStateFallbackBody, "code")("def action_name(session: SessionAgent):\n")
                   this.forceUpdate()
                 }}
               />
@@ -456,43 +492,34 @@ class StateUpdate extends Component<Props, State> {
             </>
           ) : this.fallbackBodyReplyType === "code" ? (
             <>
-              {fallbackBodies.some((fallbackBody) => fallbackBody.replyType === "code") ? (
-                <StyledTextArea
+
+              <ResizableCodeMirrorWrapper>
+                <CodeMirror
                   value={fallbackBodies.find((fallbackBody) => fallbackBody.replyType === "code")!.name}
-                  placeholder="Enter your Python code here..."
-                  onChange={(event) => {
+                  options={{
+                    mode: 'python', // Enable Python syntax highlighting
+                    theme: 'material', // Use the Material theme
+                    lineNumbers: true, // Show line numbers
+                    tabSize: 4,
+                    indentWithTabs: true,
+                  }}
+                  onBeforeChange={(editor, data, value) => {
                     const fallbackBody = fallbackBodies.find((fallbackBody) => fallbackBody.replyType === "code")!;
-                    const value = event.target.value;
+                    this.props.update(fallbackBody.id, { name: value }); // Update the backend with the new value
+                  }}
+                  onChange={(editor, data, value) => {
+                    console.log('Code updated:', value); // Optional: Log changes
+                    const fallbackBody = fallbackBodies.find((fallbackBody) => fallbackBody.replyType === "code")!;
                     if (value.trim()) {
                       this.props.update(fallbackBody.id, { name: value });
                     } else {
-                      this.props.remove(fallbackBody.id); // Updated to use the renamed method
-                    }
-                  }}
-                  onKeyDown={(event) =>
-                    this.handleKeyDown(event, bodies.find((body) => body.replyType === "code")!.id)
-                  }
-                  autoFocus
-                  spellCheck={false}
-                />
-              ) : (
-                <StyledTextArea
-                  placeholder="Enter your Python code here..."
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    if (value.trim()) {
-                      this.create(AgentStateFallbackBody, "code")(value);
-                    }
-                  }}
-                  onKeyDown={(event) =>
-                    this.handleKeyDown(event, bodies.find((body) => body.replyType === "code")!.id)
-                  }
-                  autoFocus
-                  spellCheck={false}
-                />
-              )}
-            </>
 
+                    }
+                  }}
+                />
+              </ResizableCodeMirrorWrapper>
+
+            </>
           ) : (<></>)}
 
         </section>

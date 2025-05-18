@@ -125,6 +125,9 @@ export type UMLStateTransition = UMLRelationship & {
   params?: string | string[];
 };
 
+export type AgentStateTransition = UMLRelationship & {
+  params?: string | string[];
+};
 
 export type UMLDeploymentNode = UMLElement & {
   stereotype: string;

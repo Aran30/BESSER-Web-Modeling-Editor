@@ -23,5 +23,5 @@ export const AgentElementType = {
 } as const;
 
 export const AgentRelationshipType = {
-  StateTransition: 'StateTransition',
+  AgentStateTransition: 'AgentStateTransition',
 } as const;
