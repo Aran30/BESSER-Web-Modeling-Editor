@@ -53,6 +53,8 @@ export const AgentStateTransitionComponent: FunctionComponent<Props> = ({ elemen
       return 'When No Intent Matched';
     } else if (element.condition === 'when_variable_operation_matched') {
       return 'When Variable Operation Matched';
+    } else if (element.condition === 'when_file_received') {
+      return 'When File Received';
     }
 
     return "No condition selected"
@@ -88,6 +90,8 @@ export const AgentStateTransitionComponent: FunctionComponent<Props> = ({ elemen
       else {
         return 'Either variable, operator or target value is not provided';
       }
+    } else if (element.condition === 'when_file_received') {
+      return '';
     }
     return "No condition value selected"
     const paramValues = Object.values(element.params);
@@ -126,7 +130,7 @@ export const AgentStateTransitionComponent: FunctionComponent<Props> = ({ elemen
       <text x={position.x} y={position.y} {...layoutText(direction)} pointerEvents="none" style={{ ...fill }}>
         {getConditionName()}
       </text>
-       <text x={position.x} y={position.y+30} {...layoutText(direction)} pointerEvents="none" style={{ ...fill }}>
+      <text x={position.x} y={position.y + 30} {...layoutText(direction)} pointerEvents="none" style={{ ...fill }}>
         {getConditionValue()}
       </text>
     </g>
