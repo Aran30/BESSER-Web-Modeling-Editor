@@ -136,8 +136,6 @@ class AgentStateTransitionUpdateClass extends Component<Props, State> {
           <Divider />
         </section>
         <section>
-          <Header>Name</Header>
-          <Textfield value={element.name} onChange={this.rename} autoFocus />
         </section>
         <section>
           <Header>Condition</Header>
@@ -148,28 +146,65 @@ class AgentStateTransitionUpdateClass extends Component<Props, State> {
             }
             style={{ width: "100%", padding: "6px", marginTop: "4px", marginBottom: "12px" }}
             >
-            <option value="when_intent_matched">when_intent_matched</option>
-            <option value="when_no_intent_matched">when_no_intent_matched</option>
-            <option value="variable_matched">variable_matched</option>
+            <option value="when_intent_matched">When Intent Matched</option>
+            <option value="when_no_intent_matched">When No Intent Matched</option>
+            <option value="when_variable_operation_matched">Variable Operation Matched</option>
             </select>
             {/* Intent name dropdown, only shown if condition is "when_intent_matched" */}
             {element.condition === "when_intent_matched" && (
-            <select
+            <React.Fragment>
+              {/* Intent name dropdown, only shown if condition is "when_intent_matched" */}
+              <select
               value={element.intentName || ""}
               onChange={e =>
-              this.props.update<AgentStateTransition>(element.id, { intentName: e.target.value })
+                this.props.update<AgentStateTransition>(element.id, { intentName: e.target.value })
               }
               style={{ width: "100%", padding: "6px", marginTop: "4px", marginBottom: "12px" }}
-            >
+              >
               <option value="" disabled>
-              Select intent
+                Select intent
               </option>
               {intentNames.map((name, idx) => (
-              <option key={idx} value={name}>
+                <option key={idx} value={name}>
                 {name}
-              </option>
+                </option>
               ))}
-            </select>
+              </select>
+            </React.Fragment>
+            )}
+            {/* Variable match fields, only shown if condition is "variable_matched" */}
+            {element.condition === "when_variable_operation_matched" && (
+              <React.Fragment>
+              <Textfield
+                value={element.variable || ""}
+                onChange={value =>
+                this.props.update<AgentStateTransition>(element.id, { variable: value })
+                }
+                placeholder="Variable"
+                style={{ marginBottom: "8px" }}
+              />
+              <select
+                value={element.operator || "=="}
+                onChange={e =>
+                this.props.update<AgentStateTransition>(element.id, { operator: e.target.value })
+                }
+                style={{ width: "100%", padding: "6px", marginBottom: "8px" }}
+              >
+                <option value="<">&lt;</option>
+                <option value="<=">&le;</option>
+                <option value="==">==</option>
+                <option value=">=">&ge;</option>
+                <option value=">">&gt;</option>
+                <option value="!=">!=</option>
+              </select>
+              <Textfield
+                value={element.targetValue || ""}
+                onChange={value =>
+                this.props.update<AgentStateTransition>(element.id, { targetValue: value })
+                }
+                placeholder="Target value"
+              />
+              </React.Fragment>
             )}
         </section>
         <section>

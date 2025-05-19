@@ -75,6 +75,21 @@ export type BotModelElement = {
   replyType: string;
 };
 
+
+export type AgentTransitionElement = {
+  id: string;
+  name: string;
+  type: UMLModelElementType;
+  owner: string | null;
+  bounds: IBoundary;
+  highlight?: string;
+  fillColor?: string;
+  strokeColor?: string;
+  textColor?: string;
+  assessmentNote?: string;
+  replyType: string;
+};
+
 export type UMLElement = UMLModelElement & {
   type: UMLElementType;
 };
@@ -127,6 +142,12 @@ export type UMLStateTransition = UMLRelationship & {
 
 export type AgentStateTransition = UMLRelationship & {
   params?: string | string[];
+  condition?: string;
+  intentName?: string;
+  variable?: string;
+  operator?: string;
+  targetValue?: string;
+  conditionValue?: string | { variable: string; operator: string; targetValue: string }
 };
 
 export type UMLDeploymentNode = UMLElement & {
