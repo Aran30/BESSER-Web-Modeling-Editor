@@ -150,6 +150,7 @@ class AgentStateTransitionUpdateClass extends Component<Props, State> {
             <option value="when_no_intent_matched">When No Intent Matched</option>
             <option value="when_variable_operation_matched">Variable Operation Matched</option>
             <option value="when_file_received">File Received</option>
+            <option value="auto">Auto Transition</option>
             </select>
             {/* Intent name dropdown, only shown if condition is "when_intent_matched" */}
             {element.condition === "when_intent_matched" && (

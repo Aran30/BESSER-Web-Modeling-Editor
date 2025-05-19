@@ -55,6 +55,8 @@ export const AgentStateTransitionComponent: FunctionComponent<Props> = ({ elemen
       return 'When Variable Operation Matched';
     } else if (element.condition === 'when_file_received') {
       return 'When File Received';
+    } else if (element.condition === 'auto') {
+      return 'Auto';
     }
 
     return "No condition selected"
@@ -94,6 +96,8 @@ export const AgentStateTransitionComponent: FunctionComponent<Props> = ({ elemen
       if (element.fileType) {
         return `${element.fileType}`;
       }
+    } else if (element.condition === 'auto') {
+      return '';
     }
     return "No condition value selected"
     const paramValues = Object.values(element.params);

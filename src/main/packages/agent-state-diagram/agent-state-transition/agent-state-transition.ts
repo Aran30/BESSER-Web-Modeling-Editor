@@ -57,7 +57,7 @@ export class AgentStateTransition extends UMLRelationshipCenteredDescription imp
     let conditionValue: string | { variable: string; operator: string; targetValue: string } = "";
     if (this.condition == "when_intent_matched" && this.intentName) {
       conditionValue = this.intentName
-    } else if (this.condition == "when_no_intent_matched") {
+    } else if (this.condition == "when_no_intent_matched" || this.condition == "auto") {
       conditionValue = ""
     }
     else if (this.condition == "when_variable_operation_matched" && this.variable && this.operator && this.targetValue) {
@@ -93,7 +93,7 @@ export class AgentStateTransition extends UMLRelationshipCenteredDescription imp
     if(values.condition == "when_intent_matched") {
       this.condition = values.condition;
       this.intentName = values.conditionValue as string;
-    } else if (values.condition == "when_no_intent_matched") {
+    } else if (values.condition == "when_no_intent_matched" || values.condition == "auto") {
       this.condition = values.condition;
     } else if (values.condition == "when_variable_operation_matched") {
       this.condition = values.condition;
