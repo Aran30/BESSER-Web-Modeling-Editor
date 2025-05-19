@@ -18,4 +18,5 @@ export const ClassRelationshipType = {
   ClassAggregation: 'ClassAggregation',
   ClassComposition: 'ClassComposition',
   ClassOCLLink: 'ClassOCLLink',
+  ClassLinkRel: 'ClassLinkRel',
 } as const;

@@ -7,14 +7,14 @@ exports[`test default element popup render 1`] = `
       <div>
         <section>
           <div
-            class="sc-jxOSlx WMFeS"
+            class="sc-lcIPJg hPdAaT"
           >
             <input
-              class="sc-bmzYkS sc-iHGNWf hFRLkv gacFBO"
+              class="sc-iHGNWf sc-dtBdUo eHnZYi kIvhJv"
               maxLength="100"
             />
             <button
-              class="sc-eeDRCY sc-koXPp fShmjg dCdHsc"
+              class="sc-koXPp sc-bmzYkS hyqBEI fSLmzE"
               color="link"
               tabindex="-1"
             >

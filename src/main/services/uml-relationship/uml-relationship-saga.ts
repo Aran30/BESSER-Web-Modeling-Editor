@@ -66,14 +66,56 @@ function* layoutRelationship(): SagaIterator {
     payload: { ids: [diagram.id], delta },
     undoable: false,
   });
+  
+  // Now find and update any relationships that connect to the moved relationship
+  const movedRelationshipId = action.payload.id;
+  const relationships = Object.values(elements).filter((x): x is IUMLRelationship =>
+    UMLRelationship.isUMLRelationship(x),
+  );
+  
+  // Find relationships that connect to our moved relationship
+  const connectedRelationships = relationships.filter(relationship => 
+    relationship.source.element === movedRelationshipId || 
+    relationship.target.element === movedRelationshipId
+  ).map(relationship => relationship.id);
+  
+  // Update each connected relationship
+  for (const id of connectedRelationships) {
+    yield call(recalc, id);
+  }
 }
 
 function* update(): SagaIterator {
   const action: UpdateAction = yield take(UMLElementActionTypes.UPDATE);
   const { elements }: ModelState = yield select();
 
+  // Check if this is an update from a property panel
+  // Property panel updates typically have a small number of properties and only for a single element
+  const isLikelyPanelUpdate = action.payload.values.length === 1 && 
+                             (Object.keys(action.payload.values[0]).length <= 3 || 
+                              'name' in action.payload.values[0] || 
+                              'source' in action.payload.values[0] || 
+                              'target' in action.payload.values[0]);
+
   for (const value of action.payload.values) {
     if (!UMLRelationship.isUMLRelationship(elements[value.id])) {
+      continue;
+    }
+    
+    // Skip recalculation for property panel updates if the relationship is manually laid out
+    if (isLikelyPanelUpdate && elements[value.id].isManuallyLayouted) {
+      // If this is a property panel update on a manually laid out relationship,
+      // ensure the isManuallyLayouted flag is preserved
+      yield put<UpdateAction>({
+        type: UMLElementActionTypes.UPDATE,
+        payload: { 
+          values: [{ 
+            id: value.id, 
+            isManuallyLayouted: true 
+          }]
+        },
+        undoable: false
+      });
       continue;
     }
 
@@ -87,13 +129,18 @@ function* layoutElement(): SagaIterator {
   const relationships = Object.values(elements).filter((x): x is IUMLRelationship =>
     UMLRelationship.isUMLRelationship(x),
   );
-  const updates: string[] = [];
+  
+  // Track both directly and indirectly affected relationships
+  const directUpdates: string[] = [];
+  const allUpdates = new Set<string>();
 
+  // First pass: find direct relationships connected to moved elements
   loop: for (const relationship of relationships) {
     let source: string | null = relationship.source.element;
     while (source) {
       if (action.payload.ids.includes(source)) {
-        updates.push(relationship.id);
+        directUpdates.push(relationship.id);
+        allUpdates.add(relationship.id);
         continue loop;
       }
       source = elements[source].owner;
@@ -101,17 +148,53 @@ function* layoutElement(): SagaIterator {
     let target: string | null = relationship.target.element;
     while (target) {
       if (action.payload.ids.includes(target)) {
-        updates.push(relationship.id);
+        directUpdates.push(relationship.id);
+        allUpdates.add(relationship.id);
         continue loop;
       }
       target = elements[target].owner;
     }
   }
 
-  for (const id of [...new Set([...updates])]) {
+  // Process the direct updates first
+  for (const id of directUpdates) {
     yield call(recalc, id);
   }
+
+  // Second pass: find relationships connected to relationships that were updated
+  // We may need multiple passes to handle deeply nested relationship chains
+  let updatedInLastPass = [...directUpdates];
+  let additionalUpdates: string[] = [];
+
+  // Continue until no new updates are found
+  while (updatedInLastPass.length > 0) {
+    additionalUpdates = [];
+    
+    // Look for relationships connected to relationships updated in previous pass
+    for (const relationship of relationships) {
+      // Skip if this relationship was already updated
+      if (allUpdates.has(relationship.id)) {
+        continue;
+      }
+      
+      // Check if this relationship connects to any updated relationship
+      if (updatedInLastPass.includes(relationship.source.element) || 
+          updatedInLastPass.includes(relationship.target.element)) {
+        additionalUpdates.push(relationship.id);
+        allUpdates.add(relationship.id);
+      }
+    }
+    
+    // Update these relationships
+    for (const id of additionalUpdates) {
+      yield call(recalc, id);
+    }
+    
+    // Prepare for next pass
+    updatedInLastPass = [...additionalUpdates];
+  }
 }
+
 
 function* deleteElement(): SagaIterator {
   const action: DeleteAction = yield take(UMLElementActionTypes.DELETE);
@@ -147,8 +230,22 @@ export function* recalc(id: string): SagaIterator {
     return;
   }
 
-  const source = UMLElementRepository.get(elements[relationship.source.element]);
-  const target = UMLElementRepository.get(elements[relationship.target.element]);
+  // Check if source is a relationship
+  let source;
+  if (UMLRelationship.isUMLRelationship(elements[relationship.source.element])) {
+    source = UMLRelationshipRepository.get(elements[relationship.source.element]);
+  } else {
+    source = UMLElementRepository.get(elements[relationship.source.element]);
+  }
+
+  // Check if target is a relationship
+  let target;
+  if (UMLRelationship.isUMLRelationship(elements[relationship.target.element])) {
+    target = UMLRelationshipRepository.get(elements[relationship.target.element]);
+  } else {
+    target = UMLElementRepository.get(elements[relationship.target.element]);
+  }
+  
   if (!source || !target) {
     return;
   }
@@ -164,7 +261,12 @@ export function* recalc(id: string): SagaIterator {
 
   const { path, bounds } = diff(original, updates) as Partial<IUMLRelationship>;
   if (path) {
-    if (relationship.isManuallyLayouted && shouldPreserveLayout(source.id, target.id, selected, editor.readonly)) {
+    // Check if this relationship connects to other relationships
+    const connectsToRelationship = UMLRelationship.isUMLRelationship(elements[relationship.source.element]) || 
+                                  UMLRelationship.isUMLRelationship(elements[relationship.target.element]);
+    
+    // If it connects to another relationship, we should always update its layout
+    if (relationship.isManuallyLayouted && shouldPreserveLayout(source.id, target.id, selected, editor.readonly) && !connectsToRelationship) {
       yield put<WaypointLayoutAction>(
         UMLRelationshipRepository.layoutWaypoints(updates.id, original.path, { ...original.bounds, ...bounds }),
       );

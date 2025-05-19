@@ -44,16 +44,39 @@ export const UMLRelationshipCommonRepository = {
       return [];
     }
 
+
+    // Initialize with the supported relationships of the first element
+    let initialSupportedConnections: UMLRelationshipType[];
+    
+    if (UMLRelationship.isUMLRelationship(elementsArray[0])) {
+      // For relationships, we need to get the supported relationships from the element itself
+      initialSupportedConnections = (elementsArray[0].constructor as typeof UMLRelationship).supportedRelationships || [];
+    } else {
+      // For regular elements, get the supported relationships from UMLElements
+      initialSupportedConnections = UMLElements[elementsArray[0].type as UMLElementType].supportedRelationships as UMLRelationshipType[];
+    }
+
     // determine the common supported connection types
     return elementsArray.reduce(
       (supportedConnections: UMLRelationshipType[], element: UMLElement) => {
-        const elementSupportedConnections: UMLRelationshipType[] =
-          UMLElements[element.type as UMLElementType].supportedRelationships;
-        return supportedConnections.filter((supportedConnection) =>
-          elementSupportedConnections.includes(supportedConnection),
-        );
+        // Check if the element is a relationship
+        if (UMLRelationship.isUMLRelationship(element)) {
+          // For relationships, we need to get the supported relationships from the element itself
+          const elementSupportedConnections: UMLRelationshipType[] = 
+            (element.constructor as typeof UMLRelationship).supportedRelationships || [];
+          return supportedConnections.filter((supportedConnection) =>
+            elementSupportedConnections.includes(supportedConnection),
+          );
+        } else {
+          // For regular elements, get the supported relationships from UMLElements
+          const elementSupportedConnections: UMLRelationshipType[] =
+            UMLElements[element.type as UMLElementType].supportedRelationships;
+          return supportedConnections.filter((supportedConnection) =>
+            elementSupportedConnections.includes(supportedConnection),
+          );
+        }
       },
-      UMLElements[elementsArray[0].type as UMLElementType].supportedRelationships as UMLRelationshipType[],
+      initialSupportedConnections
     );
   },
 

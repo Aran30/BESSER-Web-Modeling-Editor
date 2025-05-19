@@ -2,6 +2,9 @@ import { IBoundary } from '../../utils/geometry/boundary';
 import { IPoint, Point } from '../../utils/geometry/point';
 import { getPortsForElement, UMLElement } from '../uml-element/uml-element';
 import { Direction, IUMLElementPort } from '../uml-element/uml-element-port';
+import { UMLRelationshipType } from '../../packages/uml-relationship-type';
+import { getPortsForRelationship } from './uml-relationship-port';
+import { IUMLRelationship } from './uml-relationship';
 
 export interface Connection {
   source: IUMLElementPort;
@@ -34,14 +37,41 @@ export class Connection {
     target: Endpoint,
     options: { isStraight: boolean; isVariable: boolean },
   ): IPoint[] {
-    const sourcePortPosition = getPortsForElement(source.element)[source.direction].add(
+
+    // Check if source or target is null/undefined
+    if (!source?.element || !target?.element) {
+      console.error('Source or target element is null/undefined:', {
+        source: source?.element || 'NULL',
+        target: target?.element || 'NULL'
+      });
+      // Return a default path to prevent errors
+      return [{ x: 0, y: 0 }, { x: 100, y: 100 }];
+    }
+
+    // Get the correct port positions based on element type
+    const sourcePorts = source.element.type in UMLRelationshipType
+      ? getPortsForRelationship(source.element as unknown as IUMLRelationship)
+      : getPortsForElement(source.element);
+    const targetPorts = target.element.type in UMLRelationshipType
+      ? getPortsForRelationship(target.element as unknown as IUMLRelationship)
+      : getPortsForElement(target.element);
+
+
+    const sourcePortPosition = sourcePorts[source.direction].add(
       source.element.bounds.x,
       source.element.bounds.y,
     );
-    const targetPortPosition = getPortsForElement(target.element)[target.direction].add(
+    const targetPortPosition = targetPorts[target.direction].add(
       target.element.bounds.x,
       target.element.bounds.y,
     );
+
+
+    // Special handling for Center direction - maintain direct connection
+    if (source.direction === Direction.Center || target.direction === Direction.Center) {
+      // console.log('Using direct connection for Center direction');
+      return [sourcePortPosition, targetPortPosition];
+    }
 
     // If the user forced this relationship path to be a straight line,
     // directly connect the start and end points, even if that results in an angled line

@@ -51,6 +51,11 @@ export const UMLElementCommonRepository = {
     (id: string): AsyncAction<UMLElement | null> =>
     (dispatch, getState) => {
       const { elements } = getState();
+      
+      if (!elements[id]) {
+        console.warn(`Element with ID ${id} not found in state`);
+        return null;
+      }
 
       return UMLElementCommonRepository.get(elements[id]);
     },

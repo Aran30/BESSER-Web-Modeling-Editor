@@ -148,6 +148,7 @@ export const Components: {
   [UMLRelationshipType.ClassAggregation]: UMLAssociationComponent,
   [UMLRelationshipType.ClassBidirectional]: UMLAssociationComponent,
   [UMLRelationshipType.ClassOCLLink]: UMLAssociationComponent,
+  [UMLRelationshipType.ClassLinkRel]: UMLAssociationComponent,
   [UMLRelationshipType.ClassComposition]: UMLAssociationComponent,
   [UMLRelationshipType.ClassDependency]: UMLAssociationComponent,
   [UMLRelationshipType.ClassInheritance]: UMLAssociationComponent,

@@ -15,7 +15,8 @@ export async function exportBuml(editorInstance: any) {
     }
 
 
-    const response = await fetch('http://localhost:8000/besser_api/export-buml', {
+
+    const response = await fetch('http://localhost:9000/besser_api/export-buml', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +85,8 @@ export async function generateOutput(generatorType: string) {
       return;
     }
 
-    const response = await fetch('http://localhost:8000/besser_api/generate-output', {
+
+    const response = await fetch('http://localhost:9000/besser_api/generate-output', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -167,7 +169,8 @@ export async function checkOclConstraints(editorInstance: any) {
 
     const diagramData = getDiagramData(editorInstance);
 
-    const response = await fetch('http://localhost:8000/besser_api/check-ocl', {
+
+    const response = await fetch('http://localhost:9000/besser_api/check-ocl', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

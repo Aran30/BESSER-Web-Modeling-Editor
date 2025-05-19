@@ -152,7 +152,7 @@ export class CanvasRelationshipComponent extends Component<Props, State> {
             <circle
               visibility={selectionBoxActive || interactive || interactable || readonly ? 'hidden' : undefined}
               pointerEvents={selectionBoxActive || interactive || interactable || readonly ? 'none' : 'all'}
-              style={{ cursor: 'grab' }}
+              style={{ cursor: 'grab', pointerEvents: 'stroke' }}
               key={props.id + '_' + point.mpX + '_' + point.mpY}
               cx={point.mpX}
               cy={point.mpY}
@@ -160,7 +160,9 @@ export class CanvasRelationshipComponent extends Component<Props, State> {
               onPointerDown={(e) => {
                 this.onPointerDown(e, index, point);
               }}
-              fill={highlight}
+              fill="transparent"
+              stroke={highlight}
+              strokeWidth="7"
             />
           );
         })}
