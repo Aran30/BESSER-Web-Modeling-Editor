@@ -61,7 +61,7 @@ export type UMLModelElement = {
   assessmentNote?: string;
 };
 
-export type BotModelElement = {
+export type AgentModelElement = {
   id: string;
   name: string;
   type: UMLModelElementType;

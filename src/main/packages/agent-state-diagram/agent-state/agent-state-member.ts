@@ -32,7 +32,7 @@ export abstract class AgentStateMember extends UMLElement {
 
 
   /** Serializes an `UMLElement` to an `Apollon.UMLElement` */
-  serialize(children?: UMLElement[]): Apollon.BotModelElement {
+  serialize(children?: UMLElement[]): Apollon.AgentModelElement {
     return {
       id: this.id,
       name: this.name,
