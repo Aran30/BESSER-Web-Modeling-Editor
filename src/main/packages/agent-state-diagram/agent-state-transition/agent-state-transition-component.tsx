@@ -91,7 +91,9 @@ export const AgentStateTransitionComponent: FunctionComponent<Props> = ({ elemen
         return 'Either variable, operator or target value is not provided';
       }
     } else if (element.condition === 'when_file_received') {
-      return '';
+      if (element.fileType) {
+        return `${element.fileType}`;
+      }
     }
     return "No condition value selected"
     const paramValues = Object.values(element.params);

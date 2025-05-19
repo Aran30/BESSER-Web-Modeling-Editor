@@ -16,6 +16,7 @@ export class AgentStateTransition extends UMLRelationshipCenteredDescription imp
   variable: string | undefined = undefined;
   operator: string | undefined = undefined;
   targetValue: string | undefined = undefined;
+  fileType: string | undefined = undefined;
   constructor(values?: DeepPartial<Apollon.AgentStateTransition>) {
     super(values);
     this.params = {};
@@ -45,6 +46,9 @@ export class AgentStateTransition extends UMLRelationshipCenteredDescription imp
     if (values?.targetValue) {
       this.targetValue = values.targetValue;
     }
+    if (values?.fileType) {
+      this.fileType = values.fileType;
+    }
   }
 
   serialize(): Apollon.AgentStateTransition {
@@ -53,11 +57,13 @@ export class AgentStateTransition extends UMLRelationshipCenteredDescription imp
     let conditionValue: string | { variable: string; operator: string; targetValue: string } = "";
     if (this.condition == "when_intent_matched" && this.intentName) {
       conditionValue = this.intentName
-    } else if (this.condition == "when_no_intent_matched" || this.condition == "when_file_received") {
+    } else if (this.condition == "when_no_intent_matched") {
       conditionValue = ""
     }
     else if (this.condition == "when_variable_operation_matched" && this.variable && this.operator && this.targetValue) {
       conditionValue = {"variable": this.variable, "operator": this.operator, "targetValue": this.targetValue}
+    } else if (this.condition == "when_file_received" && this.fileType) {
+      conditionValue = this.fileType
     }
     return {
       ...base,
@@ -68,7 +74,7 @@ export class AgentStateTransition extends UMLRelationshipCenteredDescription imp
   }
 
   deserialize<T extends Apollon.UMLModelElement>(
-    values: T & { params?: string | string[] | { [id: string]: string } } & { condition?: string } & { conditionValue? : string | { variable: string; operator: string; targetValue: string } },
+    values: T & { params?: string | string[] | { [id: string]: string } } & { condition?: string } & { conditionValue? : string | { variable: string; operator: string; targetValue: string } } & { fileType?: string },
     children?: Apollon.UMLModelElement[],
   ): void {
     super.deserialize(values, children);
@@ -87,7 +93,7 @@ export class AgentStateTransition extends UMLRelationshipCenteredDescription imp
     if(values.condition == "when_intent_matched") {
       this.condition = values.condition;
       this.intentName = values.conditionValue as string;
-    } else if (values.condition == "when_no_intent_matched" || values.condition == "when_file_received") {
+    } else if (values.condition == "when_no_intent_matched") {
       this.condition = values.condition;
     } else if (values.condition == "when_variable_operation_matched") {
       this.condition = values.condition;
@@ -96,6 +102,9 @@ export class AgentStateTransition extends UMLRelationshipCenteredDescription imp
         this.operator = values.conditionValue.operator;
         this.targetValue = values.conditionValue.targetValue;
       }
+    } else if (values.condition == "when_file_received") {
+      this.condition = values.condition;
+      this.fileType = values.conditionValue as string;
     }
   }
 } 

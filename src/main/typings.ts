@@ -148,6 +148,7 @@ export type AgentStateTransition = UMLRelationship & {
   operator?: string;
   targetValue?: string;
   conditionValue?: string | { variable: string; operator: string; targetValue: string }
+  fileType?: string;
 };
 
 export type UMLDeploymentNode = UMLElement & {

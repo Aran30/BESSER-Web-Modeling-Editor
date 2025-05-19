@@ -175,38 +175,55 @@ class AgentStateTransitionUpdateClass extends Component<Props, State> {
             )}
             {/* Variable match fields, only shown if condition is "variable_matched" */}
             {element.condition === "when_variable_operation_matched" && (
-              <React.Fragment>
-              <Textfield
+                <React.Fragment>
+                <Textfield
                 value={element.variable || ""}
                 onChange={value =>
-                this.props.update<AgentStateTransition>(element.id, { variable: value })
+                  this.props.update<AgentStateTransition>(element.id, { variable: value })
                 }
                 placeholder="Variable"
                 style={{ marginBottom: "8px" }}
-              />
-              <select
+                />
+                <select
                 value={element.operator || "=="}
                 onChange={e =>
-                this.props.update<AgentStateTransition>(element.id, { operator: e.target.value })
+                  this.props.update<AgentStateTransition>(element.id, { operator: e.target.value })
                 }
                 style={{ width: "100%", padding: "6px", marginBottom: "8px" }}
-              >
+                >
                 <option value="<">&lt;</option>
                 <option value="<=">&le;</option>
                 <option value="==">==</option>
                 <option value=">=">&ge;</option>
                 <option value=">">&gt;</option>
                 <option value="!=">!=</option>
-              </select>
-              <Textfield
+                </select>
+                <Textfield
                 value={element.targetValue || ""}
                 onChange={value =>
-                this.props.update<AgentStateTransition>(element.id, { targetValue: value })
+                  this.props.update<AgentStateTransition>(element.id, { targetValue: value })
                 }
                 placeholder="Target value"
-              />
-              </React.Fragment>
-            )}
+                />
+                </React.Fragment>
+              )}
+              {element.condition === "when_file_received" && (
+                <select
+                value={element.fileType || ""}
+                onChange={e =>
+                  this.props.update<AgentStateTransition>(element.id, { fileType: e.target.value })
+                }
+                style={{ width: "100%", padding: "6px", marginTop: "4px", marginBottom: "12px" }}
+                >
+                <option value="" disabled>
+                  Select file type
+                </option>
+                <option value="PDF">PDF</option>
+                <option value="TXT">TXT</option>
+                <option value="JSON">JSON</option>
+                </select>
+              )}
+            
         </section>
         <section>
           <Flex>
