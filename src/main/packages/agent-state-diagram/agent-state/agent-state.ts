@@ -34,7 +34,7 @@ export class AgentState extends UMLContainer implements IUMLState {
   italic: boolean = false;
   underline: boolean = false;
   stereotype: string | null = null;
-  deviderPosition: number = 0;
+  dividerPosition: number = 0;
   hasBody: boolean = false;
   hasFallbackBody: boolean = false;
 
