@@ -16,7 +16,7 @@ export interface IUMLState extends IUMLContainer {
   italic: boolean;
   underline: boolean;
   stereotype: string | null;
-  deviderPosition: number;
+  dividerPosition: number;
   hasBody: boolean;
   hasFallbackBody: boolean;
 }
