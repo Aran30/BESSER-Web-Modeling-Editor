@@ -59,7 +59,6 @@ export const AgentStateTransitionComponent: FunctionComponent<Props> = ({ elemen
       return 'Auto';
     }
 
-    return "No condition selected"
     const paramValues = Object.values(element.params);
     const formattedParams = paramValues.length > 0 ? paramValues.join(', ') : '';
 
