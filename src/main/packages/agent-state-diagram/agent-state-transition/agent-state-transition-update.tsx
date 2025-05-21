@@ -123,7 +123,7 @@ class AgentStateTransitionUpdateClass extends Component<Props, State> {
         <section>
           <Flex>
             <Header gutter={false} style={{ flexGrow: 1 }}>
-              {this.props.translate('packages.StateDiagram.StateTransition')}
+              {this.props.translate('packages.AgentDiagram.StateTransition')}
             </Header>
             <ColorButton onClick={this.toggleColor} />
             <Button color="link" onClick={() => this.props.flip(element.id)}>
