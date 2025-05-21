@@ -92,7 +92,7 @@ export const AgentStateComponent: FunctionComponent<Props> = ({ element, childre
        </svg>
       )}
       {element.hasFallbackBody && (
-        <ThemedPath d={`M 0 ${element.deviderPosition} H ${element.bounds.width}`} strokeColor={element.strokeColor} />
+        <ThemedPath d={`M 0 ${element.dividerPosition} H ${element.bounds.width}`} strokeColor={element.strokeColor} />
       )}
     </g>
   );

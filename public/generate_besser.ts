@@ -42,7 +42,7 @@ export async function exportBuml(editorInstance: any) {
     const filename = editorInstance.model.type === 'StateMachineDiagram' 
       ? 'state_machine.py' 
       : editorInstance.model.type === 'AgentDiagram' 
-      ? 'agent.zip' 
+      ? 'agent.py' 
       : 'domain_model.py';
     
     a.download = filename;

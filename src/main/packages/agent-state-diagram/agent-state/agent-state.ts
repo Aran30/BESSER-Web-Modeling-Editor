@@ -88,7 +88,7 @@ export class AgentState extends UMLContainer implements IUMLState {
       body.bounds.width = this.bounds.width - 1;
       y += body.bounds.height;
     }
-    this.deviderPosition = y;
+    this.dividerPosition = y;
     for (const fallbackBody of fallbackBodies) {
       fallbackBody.bounds.x = 0.5;
       fallbackBody.bounds.y = y + 0.5;
