@@ -155,7 +155,6 @@ class AgentStateTransitionUpdateClass extends Component<Props, State> {
             {/* Intent name dropdown, only shown if condition is "when_intent_matched" */}
             {element.condition === "when_intent_matched" && (
             <React.Fragment>
-              {/* Intent name dropdown, only shown if condition is "when_intent_matched" */}
               <select
               value={element.intentName || ""}
               onChange={e =>
