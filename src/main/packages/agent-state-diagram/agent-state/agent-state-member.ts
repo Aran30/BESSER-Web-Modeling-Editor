@@ -49,7 +49,6 @@ export abstract class AgentStateMember extends UMLElement {
   }
 
     deserialize<T extends Apollon.UMLModelElement>(values: T & { replyType : string }, children?: Apollon.UMLModelElement[]) {
-      var copy = values
       this.id = values.id;
       this.name = values.name;
       this.type = values.type;
