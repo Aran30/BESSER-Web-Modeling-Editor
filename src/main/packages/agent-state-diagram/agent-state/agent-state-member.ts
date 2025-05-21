@@ -22,7 +22,6 @@ export abstract class AgentStateMember extends UMLElement {
 
   bounds: IBoundary = { ...this.bounds, height: computeDimension(1.0, 30) };
   replyType: string = "text";
-//  replyType: string | null = 'text';
   
   constructor(values?: DeepPartial<IUMLElement>) {
     super(values);
