@@ -152,6 +152,49 @@ export async function generateOutput(generatorType: string) {
   }
 }
 
+export async function deployAgent() {
+  try {
+    const editorInstance = (window as any).editor;
+
+    if (!editorInstance || !editorInstance.model) {
+      console.error("Editor is not properly initialized or doesn't have a model yet!");
+      return;
+    }
+
+    // Add validation before generation
+    if (!validateBeforeGeneration(editorInstance)) {
+      return;
+    }
+
+    const diagramData = getDiagramData(editorInstance);
+    if (!diagramData) {
+      console.error("There is no data available!");
+      return;
+    }
+
+    const response = await fetch('http://localhost:9000/besser_api/deploy-agent', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        elements: diagramData,
+        generator: 'agent',
+      }),
+    });
+
+    if (response.ok) {
+      window.open('http://localhost:8888/chat_widget/index.html', '_blank');
+    } else {
+      console.error('Error generating file:', response.statusText);
+      throw new Error(`Generation failed: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}
+
 export async function checkOclConstraints(editorInstance: any) {
   const button = document.querySelector('[onclick="window.apollon.checkOclConstraints()"]') as HTMLButtonElement;
   if (!button) return;
@@ -228,6 +271,15 @@ function setupGenerateButton() {
       generateOutput('agent');
     });
   }
+
+
+  // generate agent button, does it make sense to separate this from the other generators?
+  const deployAgentButton = document.getElementById('deployAgentButton');
+  if (deployAgentButton) {
+    deployAgentButton.addEventListener('click', () => {
+      deployAgent()
+    });
+  }
 }
 
 // Extend the window.apollon object with our functions
@@ -287,7 +339,7 @@ export async function convertBumlToJson(file: File) {
     const formData = new FormData();
     formData.append('buml_file', file);
 
-    const response = await fetch('http://localhost:8000/get-json-model', {
+    const response = await fetch('http://localhost:9000/besser_api/get-json-model', {
       method: 'POST',
       body: formData
     });
@@ -332,7 +384,7 @@ export async function generateDjangoProject(editorInstance: any) {
     throw new Error("No diagram data available!");
   }
 
-  const response = await fetch('http://localhost:8000/generate-output', {
+  const response = await fetch('http://localhost:9000/generate-output', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
