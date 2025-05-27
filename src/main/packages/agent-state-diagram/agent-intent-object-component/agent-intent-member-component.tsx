@@ -1,14 +1,14 @@
 import React, { FunctionComponent } from 'react';
 import { Text } from '../../../components/controls/text/text';
-import { IntentMember } from './intent-member';
+import { AgentIntentMember } from './agent-intent-member';
 import { ThemedRect } from '../../../components/theme/themedComponents';
 
 interface Props {
-  element: IntentMember;
+  element: AgentIntentMember;
   fillColor?: string;
 }
 
-export const IntentMemberComponent: FunctionComponent<Props> = ({ element, fillColor }) => {
+export const AgentIntentMemberComponent: FunctionComponent<Props> = ({ element, fillColor }) => {
   return (
     <g>
         

@@ -41,8 +41,7 @@ import { UMLStateTransitionUpdate } from './uml-state-diagram/uml-state-transiti
 import { UMLStateCodeBlockUpdate } from './uml-state-diagram/uml-state-code-block/uml-state-code-block-update';
 import { UMLStateUpdate } from './uml-state-diagram/uml-state/uml-state-update';
 
-import { IntentBodyUpdate } from './agent-state-diagram/intent-object-component/intent-update';
-import { ReplyBodyUpdate } from './agent-state-diagram/reply-component/reply-update';
+import { AgentIntentBodyUpdate } from './agent-state-diagram/agent-intent-object-component/agent-intent-update';
 import { AgentStateUpdate } from './agent-state-diagram/agent-state/agent-state-update';
 import { AgentStateTransitionUpdate } from './agent-state-diagram/agent-state-transition/agent-state-transition-update';
 
@@ -115,10 +114,8 @@ export const Popups: { [key in UMLElementType | UMLRelationshipType]: ComponentT
   [UMLElementType.StateMergeNode]: UMLStateMergeNodeUpdate,
   [UMLElementType.StateObjectNode]: DefaultPopup,
   [UMLElementType.StateCodeBlock]: UMLStateCodeBlockUpdate,
-  [UMLElementType.Intent]: IntentBodyUpdate,
-  [UMLElementType.IntentBody]: null,
-  [UMLElementType.Reply]: ReplyBodyUpdate,
-  [UMLElementType.ReplyBody]: null,
+  [UMLElementType.AgentIntent]: AgentIntentBodyUpdate,
+  [UMLElementType.AgentIntentBody]: null,
   [UMLElementType.AgentState]: AgentStateUpdate,
   [UMLElementType.AgentStateBody]: null,
   [UMLElementType.AgentStateFallbackBody]: null,

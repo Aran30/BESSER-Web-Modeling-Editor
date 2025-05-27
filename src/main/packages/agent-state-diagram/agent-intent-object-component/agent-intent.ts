@@ -9,7 +9,7 @@ import * as Apollon from '../../../typings';
 import { assign } from '../../../utils/fx/assign';
 import { Text } from '../../../utils/svg/text';
 import { UMLElementType } from '../../uml-element-type';
-import { ReplyBody } from '../reply-body/reply-body';
+import { AgentIntentBody } from '../agent-intent-body/agent-intent-body';
 
 export interface IUMLState extends IUMLContainer {
   italic: boolean;
@@ -19,7 +19,7 @@ export interface IUMLState extends IUMLContainer {
   hasBody: boolean;
 }
 
-export class Reply extends UMLContainer implements IUMLState {
+export class AgentIntent extends UMLContainer implements IUMLState {
   static features: UMLElementFeatures = {
     ...UMLContainer.features,
     droppable: false,
@@ -28,7 +28,7 @@ export class Reply extends UMLContainer implements IUMLState {
   static stereotypeHeaderHeight = 50;
   static nonStereotypeHeaderHeight = 40;
 
-  type: UMLElementType = AgentElementType.Reply;
+  type: UMLElementType = AgentElementType.AgentIntent;
   italic: boolean = false;
   underline: boolean = false;
   stereotype: string | null = null;
@@ -36,7 +36,7 @@ export class Reply extends UMLContainer implements IUMLState {
   hasBody: boolean = false;
 
   get headerHeight() {
-    return this.stereotype ? Reply.stereotypeHeaderHeight : Reply.nonStereotypeHeaderHeight;
+    return this.stereotype ? AgentIntent.stereotypeHeaderHeight : AgentIntent.nonStereotypeHeaderHeight;
   }
 
   constructor(values?: DeepPartial<IUMLState>) {
@@ -45,20 +45,20 @@ export class Reply extends UMLContainer implements IUMLState {
   }
 
   reorderChildren(children: IUMLElement[]): string[] {
-    const bodies = children.filter((x): x is ReplyBody => x.type === AgentElementType.ReplyBody);
+    const bodies = children.filter((x): x is AgentIntentBody => x.type === AgentElementType.AgentIntentBody);
     return [...bodies.map((element) => element.id)];
   }
 
-  serialize(children: UMLElement[] = []): Apollon.UMLReply {
+  serialize(children: UMLElement[] = []): Apollon.AgentIntent {
     return {
       ...super.serialize(children),
       type: this.type as UMLElementType,
-      bodies: children.filter((x) => x instanceof ReplyBody).map((x) => x.id)
+      bodies: children.filter((x) => x instanceof AgentIntentBody).map((x) => x.id)
     };
   }
 
   render(layer: ILayer, children: ILayoutable[] = []): ILayoutable[] {
-    const bodies = children.filter((x): x is ReplyBody => x instanceof ReplyBody);
+    const bodies = children.filter((x): x is AgentIntentBody => x instanceof AgentIntentBody);
 
     this.hasBody = bodies.length > 0;
 
@@ -68,7 +68,7 @@ export class Reply extends UMLContainer implements IUMLState {
         Math.max(
           current,
           Math.round(
-            (Text.size(layer, child.name, index === 0 ? { fontWeight: 'bold' } : undefined).width + 20) / radix,
+            (Text.size(layer, child.name, index === 0 ? { fontWeight: 'bold' } : undefined).width + 110) / radix,
           ) * radix,
         ),
       Math.round(this.bounds.width / radix) * radix,

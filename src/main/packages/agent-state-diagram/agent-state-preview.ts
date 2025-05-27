@@ -5,7 +5,7 @@ import { ComposePreview } from '../compose-preview';
 
 
 
-import { Intent } from './intent-object-component/intent';
+import { AgentIntent } from './agent-intent-object-component/agent-intent';
 
 import { UMLStateFinalNode } from '../uml-state-diagram/uml-state-final-node/uml-state-final-node';
 import { UMLStateInitialNode } from '../uml-state-diagram/uml-state-initial-node/uml-state-initial-node';
@@ -30,7 +30,7 @@ export const composeBotPreview: ComposePreview = (
   //UMLStateForkNodeHorizontal.defaultWidth = Math.round(60 / 10) * 10;
   //UMLStateForkNodeHorizontal.defaultHeight = Math.round(20 / 10) * 10;
   
-  const emptyIntent = new Intent({ name: "Intent Name" });
+  const emptyIntent = new AgentIntent({ name: "Intent Name" });
   emptyIntent.bounds = {
     ...emptyIntent.bounds,
     width: emptyIntent.bounds.width,

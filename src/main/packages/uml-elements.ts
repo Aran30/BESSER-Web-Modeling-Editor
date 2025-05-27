@@ -66,10 +66,8 @@ import { UMLStateMergeNode } from './uml-state-diagram/uml-state-merge-node/uml-
 import { UMLStateObjectNode } from './uml-state-diagram/uml-state-object-node/uml-state-object-node';
 import { UMLStateCodeBlock } from './uml-state-diagram/uml-state-code-block/uml-state-code-block';
 
-import { Intent } from './agent-state-diagram/intent-object-component/intent';
-import { IntentBody } from './agent-state-diagram/intent-body/intent-body';
-import { Reply } from './agent-state-diagram/reply-component/reply';
-import { ReplyBody } from './agent-state-diagram/reply-body/reply-body';
+import { AgentIntent } from './agent-state-diagram/agent-intent-object-component/agent-intent';
+import { AgentIntentBody } from './agent-state-diagram/agent-intent-body/agent-intent-body';
 import { AgentState } from './agent-state-diagram/agent-state/agent-state';
 import { AgentStateBody } from './agent-state-diagram/agent-state-body/agent-state-body';
 import { AgentStateFallbackBody } from './agent-state-diagram/agent-state-fallback-body/agent-state-fallback-body';
@@ -142,10 +140,8 @@ export const UMLElements = {
   [UMLElementType.StateMergeNode]: UMLStateMergeNode,
   [UMLElementType.StateObjectNode]: UMLStateObjectNode,
   [UMLElementType.StateCodeBlock]: UMLStateCodeBlock,
-  [UMLElementType.Intent]: Intent,
-  [UMLElementType.IntentBody]: IntentBody,
-  [UMLElementType.Reply]: Reply,
-  [UMLElementType.ReplyBody]: ReplyBody,
+  [UMLElementType.AgentIntent]: AgentIntent,
+  [UMLElementType.AgentIntentBody]: AgentIntentBody,
   [UMLElementType.AgentState]: AgentState,
   [UMLElementType.AgentStateBody]: AgentStateBody,
   [UMLElementType.AgentStateFallbackBody]: AgentStateFallbackBody,

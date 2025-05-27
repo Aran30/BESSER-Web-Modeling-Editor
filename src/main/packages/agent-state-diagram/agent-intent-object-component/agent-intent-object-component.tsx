@@ -1,15 +1,15 @@
 import React, { FunctionComponent } from 'react';
 import { Text } from '../../../components/controls/text/text';
-import { Intent } from './intent';
+import { AgentIntent } from './agent-intent';
 import { ThemedRect, ThemedPath } from '../../../components/theme/themedComponents';
 
 interface Props {
-  element: Intent;
+  element: AgentIntent;
   children?: React.ReactNode;
   fillColor?: string;
 }
 
-export const IntentComponent: FunctionComponent<Props> = ({ element, children, fillColor }) => {
+export const AgentIntentComponent: FunctionComponent<Props> = ({ element, children, fillColor }) => {
   const cornerRadius = 0;
   element.name = "Intent: " + element.name;
   return (

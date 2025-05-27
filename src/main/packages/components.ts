@@ -75,12 +75,8 @@ import { UMLStateObjectNodeComponent } from './uml-state-diagram/uml-state-objec
 import { UMLStateTransitionComponent } from './uml-state-diagram/uml-state-transition/uml-state-transition-component';
 import { UMLStateCodeBlockComponent } from './uml-state-diagram/uml-state-code-block/uml-state-code-block-component';
 import { UMLStateMemberComponent } from './uml-state-diagram/uml-state/uml-state-member-component';
-
-import { IntentComponent } from './agent-state-diagram/intent-object-component/intent-object-component';
-import { IntentMemberComponent } from './agent-state-diagram/intent-object-component/intent-member-component';
-import { ReplyComponent } from './agent-state-diagram/reply-component/reply-object-component';
-import { ReplyMemberComponent } from './agent-state-diagram/reply-component/reply-member-component';
-
+import { AgentIntentComponent } from './agent-state-diagram/agent-intent-object-component/agent-intent-object-component';
+import { AgentIntentMemberComponent } from './agent-state-diagram/agent-intent-object-component/agent-intent-member-component';
 import { AgentStateComponent } from './agent-state-diagram/agent-state/agent-state-component';
 import { AgentStateMemberComponent } from './agent-state-diagram/agent-state/agent-state-member-component';
 import { AgentStateTransitionComponent } from './agent-state-diagram/agent-state-transition/agent-state-transition-component';
@@ -186,10 +182,8 @@ export const Components: {
   [UMLRelationshipType.StateTransition]: UMLStateTransitionComponent,
   [UMLElementType.StateCodeBlock]: UMLStateCodeBlockComponent,
 
-  [UMLElementType.Intent]: IntentComponent,
-  [UMLElementType.IntentBody]: IntentMemberComponent,
-  [UMLElementType.Reply]: ReplyComponent,
-  [UMLElementType.ReplyBody]: ReplyMemberComponent,
+  [UMLElementType.AgentIntent]: AgentIntentComponent,
+  [UMLElementType.AgentIntentBody]: AgentIntentMemberComponent,
   [UMLElementType.AgentState]: AgentStateComponent,
   [UMLElementType.AgentStateBody]: AgentStateMemberComponent,
   [UMLElementType.AgentStateFallbackBody]: AgentStateMemberComponent,

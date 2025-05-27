@@ -23,7 +23,7 @@ type Props = {
   element: IUMLElement;
 };
 
-const IntentUpdate = ({ id, onRefChange, value, onChange, onSubmitKeyUp, onDelete, element }: Props) => {
+const AgentIntentUpdate = ({ id, onRefChange, value, onChange, onSubmitKeyUp, onDelete, element }: Props) => {
   const [colorOpen, setColorOpen] = useState(false);
 
   const toggleColor = () => {
@@ -54,4 +54,4 @@ const IntentUpdate = ({ id, onRefChange, value, onChange, onSubmitKeyUp, onDelet
   );
 };
 
-export default IntentUpdate;
+export default AgentIntentUpdate;

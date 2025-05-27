@@ -16,9 +16,9 @@ import { UMLElement } from '../../../services/uml-element/uml-element';
 import { UMLElementRepository } from '../../../services/uml-element/uml-element-repository';
 import { AsyncDispatch } from '../../../utils/actions/actions';
 import { notEmpty } from '../../../utils/not-empty';
-import { IntentBody } from '../intent-body/intent-body';
-import { Intent } from './intent';
-import IntentUpdate from '../intent-body/intent-body-update';
+import { AgentIntentBody } from '../agent-intent-body/agent-intent-body';
+import { AgentIntent } from './agent-intent';
+import AgentIntentUpdate from '../agent-intent-body/agent-intent-body-update';
 
 const Flex = styled.div`
   display: flex;
@@ -27,7 +27,7 @@ const Flex = styled.div`
 `;
 
 interface OwnProps {
-  element: Intent;
+  element: AgentIntent;
 }
 
 type StateProps = {};
@@ -81,7 +81,7 @@ class StateUpdate extends Component<Props, State> {
   render() {
     const { element, getById } = this.props;
     const children = element.ownedElements.map((id) => getById(id)).filter(notEmpty);
-    const bodies = children.filter((child) => child instanceof IntentBody);
+    const bodies = children.filter((child) => child instanceof AgentIntentBody);
     const bodyRefs: (Textfield<string> | null)[] = [];
 
 
@@ -110,7 +110,7 @@ class StateUpdate extends Component<Props, State> {
           Training Sentences
           <Header>{this.props.translate('popup.bodies')}</Header>
           {bodies.map((body, index) => (
-            <IntentUpdate
+            <AgentIntentUpdate
               id={body.id}
               key={body.id}
               value={body.name}
@@ -131,7 +131,7 @@ class StateUpdate extends Component<Props, State> {
             ref={this.newBodyField}
             outline
             value=""
-            onSubmit={this.create(IntentBody)}
+            onSubmit={this.create(AgentIntentBody)}
             onSubmitKeyUp={(key: string, value: string) => {
               if (value) {
                 this.setState({
@@ -157,7 +157,7 @@ class StateUpdate extends Component<Props, State> {
     );
   }
 
-  private create = (Clazz: typeof IntentBody) => (value: string) => {
+  private create = (Clazz: typeof AgentIntentBody) => (value: string) => {
     const { element, create } = this.props;
     const member = new Clazz();
     member.name = value;
@@ -173,4 +173,4 @@ class StateUpdate extends Component<Props, State> {
   };
 }
 
-export const IntentBodyUpdate = enhance(StateUpdate);
+export const AgentIntentBodyUpdate = enhance(StateUpdate);

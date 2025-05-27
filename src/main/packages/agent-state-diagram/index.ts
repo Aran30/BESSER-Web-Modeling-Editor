@@ -1,10 +1,10 @@
 import { AgentState } from "./agent-state/agent-state";
-import { Intent } from "./intent-object-component/intent";
+import { AgentIntent } from "./agent-intent-object-component/agent-intent";
 
 export const AgentElementType = {
   State: 'State',
   StateBody: 'StateBody',
-  IntentBody: 'IntentBody',
+  AgentIntentBody: 'AgentIntentBody',
   StateFallbackBody: 'StateFallbackBody',
   StateActionNode: 'StateActionNode',
   StateFinalNode: 'StateFinalNode',
@@ -14,9 +14,7 @@ export const AgentElementType = {
   StateMergeNode: 'StateMergeNode',
   StateObjectNode: 'StateObjectNode',
   StateCodeBlock: 'StateCodeBlock',
-  Intent: 'Intent',
-  ReplyBody: 'ReplyBody',
-  Reply: 'Reply',
+  AgentIntent: 'AgentIntent',
   AgentState: 'AgentState',
   AgentStateBody: 'AgentStateBody',
   AgentStateFallbackBody: 'AgentStateFallbackBody',
