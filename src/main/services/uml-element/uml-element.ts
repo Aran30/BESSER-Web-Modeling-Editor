@@ -33,7 +33,6 @@ export interface IUMLElement {
   /** Note to show for element's assessment */
   assessmentNote?: string;
   isManuallyLayouted?: boolean;
-  replyType?: string;
 }
 
 export const enum ResizeFrom {

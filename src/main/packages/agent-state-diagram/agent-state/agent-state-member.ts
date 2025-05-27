@@ -47,7 +47,7 @@ export abstract class AgentStateMember extends UMLElement {
     };
   }
 
-    deserialize<T extends Apollon.UMLModelElement>(values: T & { replyType : string }, children?: Apollon.UMLModelElement[]) {
+    deserialize<T extends Apollon.UMLModelElement>(values: T & { replyType : string }) {
       this.id = values.id;
       this.name = values.name;
       this.type = values.type;
