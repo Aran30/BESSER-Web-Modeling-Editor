@@ -99,16 +99,6 @@ export const AgentStateTransitionComponent: FunctionComponent<Props> = ({ elemen
       return '';
     }
     return "No condition value selected"
-    const paramValues = Object.values(element.params);
-    const formattedParams = paramValues.length > 0 ? paramValues.join(', ') : '';
-
-    if (formattedParams && element.name) {
-      return `${element.name} [${formattedParams}]`;
-    }
-    if (formattedParams) {
-      return `[${formattedParams}]`;
-    }
-    return element.name;
   };
 
   return (
